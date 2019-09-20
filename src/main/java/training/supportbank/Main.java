@@ -10,8 +10,12 @@ import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 public class Main {
+
+    private static final Logger LOGGER = LogManager.getLogger();
 
     private static boolean userExists( List<Account> accountList, String name ) {
         boolean doesUserExist = false;
@@ -40,8 +44,7 @@ public class Main {
     }
 
     private static void createUserInput(List<Account> accountList, List<Transaction> transactionList) {
-        final String setBoldText = "\033[0;1m";
-        final String setPlainText = "\033[0;0m";
+
         Scanner userInput = new Scanner(System.in);
         System.out.println("Please enter 'List All' or 'List[Account]'");
         String inputText = userInput.nextLine();
@@ -54,18 +57,17 @@ public class Main {
                     System.out.println(s.name + " is £" + s.balance + " in debt");
                 }
             }
-        }
-
-        for( int i = 0; i < transactionList.size(); i++ ) {
-            String fromName = transactionList.get(i).fromName;
-            String toName = transactionList.get(i).toName;
-            if(inputText.equals("List[" + fromName + "]") || inputText.equals("List[" + toName + "]")) {
-                System.out.println(transactionList.get(i).fromName + " gave " + transactionList.get(i).toName + " £" + transactionList.get(i).amountSent + " for " + transactionList.get(i).narrative);
+        } else {
+            for( int i = 0; i < transactionList.size(); i++ ) {
+                String fromName = transactionList.get(i).fromName;
+                String toName = transactionList.get(i).toName;
+                if(inputText.equals("List[" + fromName + "]") || inputText.equals("List[" + toName + "]")) {
+                    System.out.println(transactionList.get(i).fromName + " gave " + transactionList.get(i).toName + " £" + transactionList.get(i).amountSent + " for " + transactionList.get(i).narrative);
+                }
             }
-
         }
-    }
 
+    }
 
     public static void main(String[] args) throws IOException {
         List<String> inputFile = Files.readAllLines(Paths.get("Transactions2014.csv"), Charset.forName("windows-1252")); // Reads CSV file
@@ -106,15 +108,6 @@ public class Main {
         // -----------------------
 
         createUserInput(accountList, transactionList);
-
-        // PRINTS ARRAY
-
-
-
-//        for(Transaction s : transactionList) {
-//            System.out.println(s.fromName + " gave " + s.toName + " £" + s.amountSent + " for " + s.narrative);
-//        }
-
 
     }
 
