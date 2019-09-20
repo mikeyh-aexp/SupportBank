@@ -1,13 +1,12 @@
 package training.supportbank;
 
-import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.nio.charset.Charset;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
@@ -24,9 +23,53 @@ public class Main {
         return doesUserExist;
     }
 
+    private static void updateUserBalance(List<Account> accountList, String sender, String receiver, BigDecimal amount) {
+
+        // LOOP THROUGH accountList
+        // if sender or receiver matches persons name
+            // call required method
+
+        for( int i = 0; i < accountList.size(); i++ ) {
+            if(sender.equals(accountList.get(i).name)) {
+                accountList.get(i).decreaseBalance(amount);
+            } else if(receiver.equals(accountList.get(i).name)) {
+                accountList.get(i).increaseBalance(amount);
+            }
+        }
+
+    }
+
+    private static void createUserInput(List<Account> accountList, List<Transaction> transactionList) {
+        final String setBoldText = "\033[0;1m";
+        final String setPlainText = "\033[0;0m";
+        Scanner userInput = new Scanner(System.in);
+        System.out.println("Please enter 'List All' or 'List[Account]'");
+        String inputText = userInput.nextLine();
+
+        if(inputText.equals("List All") || inputText.equals("list all")) {
+            for(Account s : accountList) {
+                if( s.balance.compareTo(BigDecimal.ZERO) > 0 ) {
+                    System.out.println(s.name + " is owed £" + s.balance);
+                } else {
+                    System.out.println(s.name + " is £" + s.balance + " in debt");
+                }
+            }
+        }
+
+        for( int i = 0; i < transactionList.size(); i++ ) {
+            String fromName = transactionList.get(i).fromName;
+            String toName = transactionList.get(i).toName;
+            if(inputText.equals("List[" + fromName + "]") || inputText.equals("List[" + toName + "]")) {
+                System.out.println(transactionList.get(i).fromName + " gave " + transactionList.get(i).toName + " £" + transactionList.get(i).amountSent + " for " + transactionList.get(i).narrative);
+            }
+
+        }
+    }
+
+
     public static void main(String[] args) throws IOException {
         List<String> inputFile = Files.readAllLines(Paths.get("Transactions2014.csv"), Charset.forName("windows-1252")); // Reads CSV file
-
+        DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
         List<Account> accountList = new ArrayList<Account>();
         List<Transaction> transactionList = new ArrayList<Transaction>();
 
@@ -35,26 +78,43 @@ public class Main {
         // LOOPS THROUGH CSV FILE
 
         for( int i = 1; i < inputFile.size(); i++ ) {
-            String[] columns = inputFile.get(i).split(",");
 
+            String[] columns = inputFile.get(i).split(",");
+            LocalDate date = LocalDate.parse(columns[0], dateTimeFormatter);
+            String sender = columns[1];
+            String receiver = columns[2];
+            String narrative = columns[3];
+            BigDecimal amount = new BigDecimal( columns[4] );
+
+            // Looks through 'from' column
             if( !userExists( accountList, columns[1] ) ) { // Runs if user does not exist already
                 Account person = new Account( columns[1] );
                 accountList.add(person);
             }
+            // Looks through 'To' column
+            if( !userExists( accountList, columns[2] ) ) { // Runs if user does not exist already
+                Account person = new Account( columns[2] );
+                accountList.add(person);
+            }
+
+            transactionList.add( new Transaction( date, sender, receiver, narrative, amount ) );
+
+            updateUserBalance(accountList, sender, receiver, amount); // runs method which updates balance for each person
 
         }
 
         // -----------------------
 
+        createUserInput(accountList, transactionList);
+
         // PRINTS ARRAY
 
-        for(Account s : accountList) {
-            System.out.println(s.name + " " + s.balance);
-        }
-//
+
+
 //        for(Transaction s : transactionList) {
-//            System.out.println(s.fromName + ", " + s.toName + ", " + s.narrative + ", " + s.amountSent);
+//            System.out.println(s.fromName + " gave " + s.toName + " £" + s.amountSent + " for " + s.narrative);
 //        }
+
 
     }
 

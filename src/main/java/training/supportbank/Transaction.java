@@ -10,7 +10,8 @@ public class Transaction {
     String toName;
     BigDecimal amountSent;
 
-    public Transaction(String fromName, String toName, String narrative, BigDecimal amountSent) {
+    public Transaction(LocalDate date, String fromName, String toName, String narrative, BigDecimal amountSent) {
+        this.date = date;
         this.narrative = narrative;
         this.fromName = fromName;
         this.toName = toName;
