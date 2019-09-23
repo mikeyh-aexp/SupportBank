@@ -77,28 +77,33 @@ public class Main {
 
         for( int i = 1; i < input.size(); i++ ) {
 
-            String[] columns = input.get(i).split(",");
-            LocalDate date = LocalDate.parse(columns[0], dateTimeFormatter);
-            String sender = columns[1];
-            String receiver = columns[2];
-            String narrative = columns[3];
-            BigDecimal amount = new BigDecimal( columns[4] );
+            try {
+                String[] columns = input.get(i).split(",");
+                LocalDate date = LocalDate.parse(columns[0], dateTimeFormatter);
+                String sender = columns[1];
+                String receiver = columns[2];
+                String narrative = columns[3];
+                BigDecimal amount = new BigDecimal( columns[4] );
 
-            // Looks through 'from' column
-            if( !userExists( accountList, sender ) ) { // Runs if user does not exist already
-                Account person = new Account( sender );
-                accountList.add(person);
+                // Looks through 'from' column
+                if( !userExists( accountList, sender ) ) { // Runs if user does not exist already
+                    Account person = new Account( sender );
+                    accountList.add(person);
+                }
+                // Looks through 'To' column
+                if( !userExists( accountList, receiver ) ) { // Runs if user does not exist already
+                    Account person = new Account( receiver );
+                    accountList.add(person);
+                }
+
+                transactionList.add( new Transaction( date, sender, receiver, narrative, amount ) );
+                updateUserBalance(accountList, sender, receiver, amount); // runs method which updates balance for each person
+
+            } catch(Exception e) {
+                LOGGER.debug("FOUND ERROR :-", e);
             }
-            // Looks through 'To' column
-            if( !userExists( accountList, receiver ) ) { // Runs if user does not exist already
-                Account person = new Account( receiver );
-                accountList.add(person);
-            }
 
-            transactionList.add( new Transaction( date, sender, receiver, narrative, amount ) );
-            updateUserBalance(accountList, sender, receiver, amount); // runs method which updates balance for each person
 
-            //
         }
 
         createUserInput(accountList, transactionList);
@@ -109,13 +114,14 @@ public class Main {
         List<String> inputFile2014 = Files.readAllLines(Paths.get("Transactions2014.csv"), Charset.forName("windows-1252")); // Reads CSV file
         List<String> inputFileDodgy = Files.readAllLines(Paths.get("DodgyTransactions.csv"), Charset.forName("windows-1252")); // Reads CSV file
 
+        loopFile(inputFileDodgy);
 
-        try {
-//            loopFile(inputFile2014);
-            loopFile(inputFileDodgy);
-        } catch(NumberFormatException e) {
-            LOGGER.error("CSV file invalid data");
-        }
+//        try {
+////            loopFile(inputFile2014);
+//            loopFile(inputFileDodgy);
+//        } catch(NumberFormatException e) {
+//            LOGGER.error("CSV file invalid data");
+//        }
         
     }
 
