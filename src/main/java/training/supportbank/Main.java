@@ -15,7 +15,7 @@ import org.apache.logging.log4j.Logger;
 
 public class Main {
 
-    private static final Logger LOGGER = LogManager.getLogger();
+    private static final Logger LOGGER = LogManager.getLogger(Main.class);
 
     private static boolean userExists( List<Account> accountList, String name ) {
         boolean doesUserExist = false;
@@ -69,19 +69,15 @@ public class Main {
 
     }
 
-    public static void main(String[] args) throws IOException {
-        List<String> inputFile = Files.readAllLines(Paths.get("Transactions2014.csv"), Charset.forName("windows-1252")); // Reads CSV file
+    private static void loopFile(List<String> input) throws IOException {
+
         DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
         List<Account> accountList = new ArrayList<Account>();
         List<Transaction> transactionList = new ArrayList<Transaction>();
 
-        // -----------------------
+        for( int i = 1; i < input.size(); i++ ) {
 
-        // LOOPS THROUGH CSV FILE
-
-        for( int i = 1; i < inputFile.size(); i++ ) {
-
-            String[] columns = inputFile.get(i).split(",");
+            String[] columns = input.get(i).split(",");
             LocalDate date = LocalDate.parse(columns[0], dateTimeFormatter);
             String sender = columns[1];
             String receiver = columns[2];
@@ -89,26 +85,38 @@ public class Main {
             BigDecimal amount = new BigDecimal( columns[4] );
 
             // Looks through 'from' column
-            if( !userExists( accountList, columns[1] ) ) { // Runs if user does not exist already
-                Account person = new Account( columns[1] );
+            if( !userExists( accountList, sender ) ) { // Runs if user does not exist already
+                Account person = new Account( sender );
                 accountList.add(person);
             }
             // Looks through 'To' column
-            if( !userExists( accountList, columns[2] ) ) { // Runs if user does not exist already
-                Account person = new Account( columns[2] );
+            if( !userExists( accountList, receiver ) ) { // Runs if user does not exist already
+                Account person = new Account( receiver );
                 accountList.add(person);
             }
 
             transactionList.add( new Transaction( date, sender, receiver, narrative, amount ) );
-
             updateUserBalance(accountList, sender, receiver, amount); // runs method which updates balance for each person
 
+            //
         }
 
-        // -----------------------
-
         createUserInput(accountList, transactionList);
+    }
 
+    public static void main(String[] args) throws IOException {
+
+        List<String> inputFile2014 = Files.readAllLines(Paths.get("Transactions2014.csv"), Charset.forName("windows-1252")); // Reads CSV file
+        List<String> inputFileDodgy = Files.readAllLines(Paths.get("DodgyTransactions.csv"), Charset.forName("windows-1252")); // Reads CSV file
+
+
+        try {
+//            loopFile(inputFile2014);
+            loopFile(inputFileDodgy);
+        } catch(NumberFormatException e) {
+            LOGGER.error("CSV file invalid data");
+        }
+        
     }
 
 }

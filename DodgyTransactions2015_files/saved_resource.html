@@ -1,0 +1,590 @@
+<!DOCTYPE html>
+<!-- saved from url=(0137)https://isolate.menlosecurity.com/https://raw.githubusercontent.com/CorndelWithSoftwire/SupportBank-Java/master/DodgyTransactions2015.csv -->
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="./bootstrap.min.css" rel="stylesheet" type="text/css">
+<link href="./bootstrap-responsive.min.css" rel="stylesheet" type="text/css">
+<link href="./modal.css" rel="stylesheet" type="text/css">
+
+    
+    <style type="text/css">
+       .btn {
+          color: #2d95bf !important;
+       
+          background: none !important;
+       
+          border-color: #2d95bf !important;
+       }
+       .btn:hover {
+          text-decoration: none !important;
+       
+          color: #fff !important;
+          background: #2d95bf !important;
+          opacity: 1 !important;
+       
+       }
+       .btn:focus {
+          outline: none;
+       }
+       .btn.btn-primary, .btn.btn-danger {
+          color: #ffffff !important;
+       
+          background-color: #2d95bf !important;
+       
+          border: #2b5fa7 1px solid !important;
+       }
+       .btn.btn-primary:hover, .btn.btn-danger:hover {
+       
+          opacity: 0.75 !important;
+       
+       }
+       .modal {
+          color: #595959 !important;
+       }
+       #popup-allow-button, #fullscreen-allow-button {
+          border: #2b5fa7 1px solid !important;
+       }
+    </style>
+      
+      
+    
+  </head>
+  <body style="background: transparent;">
+    <div id="modals-container">
+          <div id="crash-modal" class="modal  font-gotham hide">
+       <div class="modal-header">
+          <!--<button type="button" class="close" data-dismiss="modal"><i
+                class="icon-remove"></i></button>-->
+          <h3 id="crash-header-text"><img class="custom-logo" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACgAAAAoCAYAAACM/rhtAAADFUlEQVRYR+2XQUhUURSGz1AIhmEOCIKQCUYRCLpxa+7cldtaVLQNdFPQpqxNixYptI1q07bauSu3bhSEIBCMIBAESxCEIIzvwv84c+e+RufOiNBcGBjePffd//znP/+9r2InfFQCvtnVgxOJc3G80gGYVZkOg1n0mdl/weD7u8N2rvtUHVd33n0Pz1/MDCZ5/LX/x2ZebYa5+ekBmxzpqYubung2r4uvjvTYp3sjSQALy9v2cX23dJ5FUy83bO3Hvm0+upJMssLI8UHAAXL46Rf7tvO7APr6xnm7PtprsAjDAPm8sVfMwyygPqzv2vLGnhEfx4TgHA1eqHaFTdiYl/sxNthtq/cvBdDEpTZXEsQAmCTrRg5ANrg9UU1nbhZKC7sqpWeQZ0qC/0+Wtmx+aat1AFUihK7MYerx9EAoKwPwJBEDBLTAUgHWeYkAHF1mlZiuE5g3KztFJ85O9ofNAM4QAF9iQCuJucl+uzbaW0iEpCh5wXazJVbX9T1cL8ry89lo0BKbCzQAsBkP8GBhzFhHEsTTTIqnoRaXt/MAqnSlunFKkhTwO7ECQJ+EwtV0NQ3VDIN0JzqJrSVphmaBQfzQA0Rj48+/1iyRbLIAypgpiXRE5moG7Yi3qSuZ5+cBEhcnmNLrkX0QjaAZslenwRBai4d0Fj+nxLG1+BOpaQalEV7uPY1yp85iElA3e5DyRuaUpFgmzq870lksS0htFptwmR71XCB9HPbij0sS7ztzOu8sVrkqc2v/xFRjvmZBEv6WA5u6OOiU4SQ6NoB06FC1q2gsQOioLAOHbLJvMzGDMJW6/0ljvvsBSezblZ1Ci6zX9S0w+uBya0vcCGDcvV4XdeA4j5sxav/Sw2pQJqy18UlCOWEOkN7CTiTAGvCtZvAwJU6dwzDrWSxijhugBydAPJNh14G8OdTaJikzw5TN6MZ9rDZTBjA2ankgH03+s0BMqqNbZtSNjrbUvD62/KdBHJdt1GXfxI0AU1a0p8sEIG9NVOuWHemy0GjTtszndnFbQPmXdgDmUtxhsGUM5r6ojev/Aq30WEeR3otHAAAAAElFTkSuQmCC">  Error</h3>
+       </div>
+       <div id="crash-body" class="modal-body">
+          <p>Error while processing request.</p>
+          <p>RID: <b id="crash-RID"></b><br><span id="crash-msg"></span></p>
+       </div>
+       <div class="modal-footer">
+          <button id="crash-restart-button" class="btn btn-danger" data-dismiss="modal">Restart</button>
+       </div>
+    </div>
+
+    <div id="feedback-modal" class="modal  font-gotham hide" data-backdrop="static">
+       <div class="modal-header">
+          <button type="button" class="close" id="feedback-escape-button" data-dismiss="modal"><i class="icon-remove"></i></button>
+          <h4><img class="custom-logo" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACgAAAAoCAYAAACM/rhtAAADFUlEQVRYR+2XQUhUURSGz1AIhmEOCIKQCUYRCLpxa+7cldtaVLQNdFPQpqxNixYptI1q07bauSu3bhSEIBCMIBAESxCEIIzvwv84c+e+RufOiNBcGBjePffd//znP/+9r2InfFQCvtnVgxOJc3G80gGYVZkOg1n0mdl/weD7u8N2rvtUHVd33n0Pz1/MDCZ5/LX/x2ZebYa5+ekBmxzpqYubung2r4uvjvTYp3sjSQALy9v2cX23dJ5FUy83bO3Hvm0+upJMssLI8UHAAXL46Rf7tvO7APr6xnm7PtprsAjDAPm8sVfMwyygPqzv2vLGnhEfx4TgHA1eqHaFTdiYl/sxNthtq/cvBdDEpTZXEsQAmCTrRg5ANrg9UU1nbhZKC7sqpWeQZ0qC/0+Wtmx+aat1AFUihK7MYerx9EAoKwPwJBEDBLTAUgHWeYkAHF1mlZiuE5g3KztFJ85O9ofNAM4QAF9iQCuJucl+uzbaW0iEpCh5wXazJVbX9T1cL8ry89lo0BKbCzQAsBkP8GBhzFhHEsTTTIqnoRaXt/MAqnSlunFKkhTwO7ECQJ+EwtV0NQ3VDIN0JzqJrSVphmaBQfzQA0Rj48+/1iyRbLIAypgpiXRE5moG7Yi3qSuZ5+cBEhcnmNLrkX0QjaAZslenwRBai4d0Fj+nxLG1+BOpaQalEV7uPY1yp85iElA3e5DyRuaUpFgmzq870lksS0htFptwmR71XCB9HPbij0sS7ztzOu8sVrkqc2v/xFRjvmZBEv6WA5u6OOiU4SQ6NoB06FC1q2gsQOioLAOHbLJvMzGDMJW6/0ljvvsBSezblZ1Ci6zX9S0w+uBya0vcCGDcvV4XdeA4j5sxav/Sw2pQJqy18UlCOWEOkN7CTiTAGvCtZvAwJU6dwzDrWSxijhugBydAPJNh14G8OdTaJikzw5TN6MZ9rDZTBjA2ankgH03+s0BMqqNbZtSNjrbUvD62/KdBHJdt1GXfxI0AU1a0p8sEIG9NVOuWHemy0GjTtszndnFbQPmXdgDmUtxhsGUM5r6ojev/Aq30WEeR3otHAAAAAElFTkSuQmCC">  Thank you for helping us improve our product.</h4>
+          <p>Please include a detailed description below.</p>
+       </div>
+       <div class="modal-body">
+          <textarea id="feedback-text" style="width: 95%; height: 100%;" rows="6"></textarea>
+          <div id="feedback-result"></div>
+       </div>
+       <div class="modal-footer">
+          <button class="btn" id="feedback-cancel-button" data-dismiss="modal">Cancel</button>
+          <button class="btn btn-primary" id="feedback-send-button">Send</button>
+       </div>
+    </div>
+
+    <div id="popup-modal" class="modal  font-gotham hide" tabindex="-1">
+       <div id="popup-indicator" class="indicator"></div>
+       <div class="modal-header">
+          <button id="popup-escape-button" class="close" data-dismiss="modal">×</button>
+          <h3 id="popup-header-text"><img class="custom-logo" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACgAAAAoCAYAAACM/rhtAAADFUlEQVRYR+2XQUhUURSGz1AIhmEOCIKQCUYRCLpxa+7cldtaVLQNdFPQpqxNixYptI1q07bauSu3bhSEIBCMIBAESxCEIIzvwv84c+e+RufOiNBcGBjePffd//znP/+9r2InfFQCvtnVgxOJc3G80gGYVZkOg1n0mdl/weD7u8N2rvtUHVd33n0Pz1/MDCZ5/LX/x2ZebYa5+ekBmxzpqYubung2r4uvjvTYp3sjSQALy9v2cX23dJ5FUy83bO3Hvm0+upJMssLI8UHAAXL46Rf7tvO7APr6xnm7PtprsAjDAPm8sVfMwyygPqzv2vLGnhEfx4TgHA1eqHaFTdiYl/sxNthtq/cvBdDEpTZXEsQAmCTrRg5ANrg9UU1nbhZKC7sqpWeQZ0qC/0+Wtmx+aat1AFUihK7MYerx9EAoKwPwJBEDBLTAUgHWeYkAHF1mlZiuE5g3KztFJ85O9ofNAM4QAF9iQCuJucl+uzbaW0iEpCh5wXazJVbX9T1cL8ry89lo0BKbCzQAsBkP8GBhzFhHEsTTTIqnoRaXt/MAqnSlunFKkhTwO7ECQJ+EwtV0NQ3VDIN0JzqJrSVphmaBQfzQA0Rj48+/1iyRbLIAypgpiXRE5moG7Yi3qSuZ5+cBEhcnmNLrkX0QjaAZslenwRBai4d0Fj+nxLG1+BOpaQalEV7uPY1yp85iElA3e5DyRuaUpFgmzq870lksS0htFptwmR71XCB9HPbij0sS7ztzOu8sVrkqc2v/xFRjvmZBEv6WA5u6OOiU4SQ6NoB06FC1q2gsQOioLAOHbLJvMzGDMJW6/0ljvvsBSezblZ1Ci6zX9S0w+uBya0vcCGDcvV4XdeA4j5sxav/Sw2pQJqy18UlCOWEOkN7CTiTAGvCtZvAwJU6dwzDrWSxijhugBydAPJNh14G8OdTaJikzw5TN6MZ9rDZTBjA2ankgH03+s0BMqqNbZtSNjrbUvD62/KdBHJdt1GXfxI0AU1a0p8sEIG9NVOuWHemy0GjTtszndnFbQPmXdgDmUtxhsGUM5r6ojev/Aq30WEeR3otHAAAAAElFTkSuQmCC">  New Tab Requested</h3>
+       </div>
+       <div id="popup-body" class="modal-body" style="display: none;">
+         
+         <p id="popup-message-with-url">The page is trying to open <b id="popup-origin"></b> in a new window.</p>
+         <p id="popup-message-without-url">The page is trying to open a new window.</p>
+       </div>
+       <div id="popup-footer" class="modal-footer">
+          <button id="popup-deny-button" class="btn" data-dismiss="modal" title="Deny Operation">Block</button>
+          <button id="popup-allow-button" type="button" class="btn btn-primary bold" rel="tooltip" data-dismiss="modal" title="Allow Operation">Allow</button>
+       </div>
+    </div>
+
+    <div id="confirm-upload-modal" class="modal  font-gotham hide" data-backdrop="static">
+       <div class="modal-header">
+          <h3 id="confirm-upload-header-text"><img class="custom-logo" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACgAAAAoCAYAAACM/rhtAAADFUlEQVRYR+2XQUhUURSGz1AIhmEOCIKQCUYRCLpxa+7cldtaVLQNdFPQpqxNixYptI1q07bauSu3bhSEIBCMIBAESxCEIIzvwv84c+e+RufOiNBcGBjePffd//znP/+9r2InfFQCvtnVgxOJc3G80gGYVZkOg1n0mdl/weD7u8N2rvtUHVd33n0Pz1/MDCZ5/LX/x2ZebYa5+ekBmxzpqYubung2r4uvjvTYp3sjSQALy9v2cX23dJ5FUy83bO3Hvm0+upJMssLI8UHAAXL46Rf7tvO7APr6xnm7PtprsAjDAPm8sVfMwyygPqzv2vLGnhEfx4TgHA1eqHaFTdiYl/sxNthtq/cvBdDEpTZXEsQAmCTrRg5ANrg9UU1nbhZKC7sqpWeQZ0qC/0+Wtmx+aat1AFUihK7MYerx9EAoKwPwJBEDBLTAUgHWeYkAHF1mlZiuE5g3KztFJ85O9ofNAM4QAF9iQCuJucl+uzbaW0iEpCh5wXazJVbX9T1cL8ry89lo0BKbCzQAsBkP8GBhzFhHEsTTTIqnoRaXt/MAqnSlunFKkhTwO7ECQJ+EwtV0NQ3VDIN0JzqJrSVphmaBQfzQA0Rj48+/1iyRbLIAypgpiXRE5moG7Yi3qSuZ5+cBEhcnmNLrkX0QjaAZslenwRBai4d0Fj+nxLG1+BOpaQalEV7uPY1yp85iElA3e5DyRuaUpFgmzq870lksS0htFptwmR71XCB9HPbij0sS7ztzOu8sVrkqc2v/xFRjvmZBEv6WA5u6OOiU4SQ6NoB06FC1q2gsQOioLAOHbLJvMzGDMJW6/0ljvvsBSezblZ1Ci6zX9S0w+uBya0vcCGDcvV4XdeA4j5sxav/Sw2pQJqy18UlCOWEOkN7CTiTAGvCtZvAwJU6dwzDrWSxijhugBydAPJNh14G8OdTaJikzw5TN6MZ9rDZTBjA2ankgH03+s0BMqqNbZtSNjrbUvD62/KdBHJdt1GXfxI0AU1a0p8sEIG9NVOuWHemy0GjTtszndnFbQPmXdgDmUtxhsGUM5r6ojev/Aq30WEeR3otHAAAAAElFTkSuQmCC">  File Upload</h3>
+       </div>
+       <div id="confirm-upload-body" class="modal-body">
+          <p>This page is trying to open the file selector for upload.</p>
+       </div>
+       <div id="confirm-upload-footer" class="modal-footer">
+          <button id="confirm-upload-cancel-button" class="btn" data-dismiss="modal" title="Cancel the upload">Cancel</button>
+          <button id="confirm-upload-ok-button" type="button" class="btn btn-primary bold" rel="tooltip" data-dismiss="modal" title="Upload files from your local disk">Allow</button>
+       </div>
+    </div>
+
+    <div id="uploading-modal" class="modal  font-gotham hide" data-backdrop="static">
+       <div class="modal-header">
+          <h3 id="uploading-header-text"><img class="custom-logo" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACgAAAAoCAYAAACM/rhtAAADFUlEQVRYR+2XQUhUURSGz1AIhmEOCIKQCUYRCLpxa+7cldtaVLQNdFPQpqxNixYptI1q07bauSu3bhSEIBCMIBAESxCEIIzvwv84c+e+RufOiNBcGBjePffd//znP/+9r2InfFQCvtnVgxOJc3G80gGYVZkOg1n0mdl/weD7u8N2rvtUHVd33n0Pz1/MDCZ5/LX/x2ZebYa5+ekBmxzpqYubung2r4uvjvTYp3sjSQALy9v2cX23dJ5FUy83bO3Hvm0+upJMssLI8UHAAXL46Rf7tvO7APr6xnm7PtprsAjDAPm8sVfMwyygPqzv2vLGnhEfx4TgHA1eqHaFTdiYl/sxNthtq/cvBdDEpTZXEsQAmCTrRg5ANrg9UU1nbhZKC7sqpWeQZ0qC/0+Wtmx+aat1AFUihK7MYerx9EAoKwPwJBEDBLTAUgHWeYkAHF1mlZiuE5g3KztFJ85O9ofNAM4QAF9iQCuJucl+uzbaW0iEpCh5wXazJVbX9T1cL8ry89lo0BKbCzQAsBkP8GBhzFhHEsTTTIqnoRaXt/MAqnSlunFKkhTwO7ECQJ+EwtV0NQ3VDIN0JzqJrSVphmaBQfzQA0Rj48+/1iyRbLIAypgpiXRE5moG7Yi3qSuZ5+cBEhcnmNLrkX0QjaAZslenwRBai4d0Fj+nxLG1+BOpaQalEV7uPY1yp85iElA3e5DyRuaUpFgmzq870lksS0htFptwmR71XCB9HPbij0sS7ztzOu8sVrkqc2v/xFRjvmZBEv6WA5u6OOiU4SQ6NoB06FC1q2gsQOioLAOHbLJvMzGDMJW6/0ljvvsBSezblZ1Ci6zX9S0w+uBya0vcCGDcvV4XdeA4j5sxav/Sw2pQJqy18UlCOWEOkN7CTiTAGvCtZvAwJU6dwzDrWSxijhugBydAPJNh14G8OdTaJikzw5TN6MZ9rDZTBjA2ankgH03+s0BMqqNbZtSNjrbUvD62/KdBHJdt1GXfxI0AU1a0p8sEIG9NVOuWHemy0GjTtszndnFbQPmXdgDmUtxhsGUM5r6ojev/Aq30WEeR3otHAAAAAElFTkSuQmCC">  File Upload in Progress</h3>
+       </div>
+       <div id="uploading-body" class="modal-body">
+          <p>Uploading file:</p>
+          <p><b><span id="uploading-filename"></span></b></p>
+          <div id="uploading-progress-bar" class="progress progress-striped active">
+             <div id="uploading-progress" class="bar" style="width: 0%;"></div>
+          </div>
+          <div id="upload-analysis-div">
+             <p id="upload-extract-msg" class="hide">Performing further analysis on the following file. Please wait, this may take several minutes.</p>
+             <div id="upload-analysis-spinner" class="hide" style="text-align:center"><img id="upload-analysis-spinner-logo" class="icon" width="28" src="https://isolate.menlosecurity.com/https://raw.githubusercontent.com/CorndelWithSoftwire/SupportBank-Java/master/DodgyTransactions2015.csv"></div>
+          </div>
+          <div id="uploading-transfer-div" class="hide">
+            <p><b><span id="uploading-encrypted-filename"></span></b> is encrypted. Click on the Transfer button below to provide the password for security analysis before upload.</p>
+            <form id="uploading-transfer-form" method="post" target="_blank">
+              <input id="uploading-transfer-fid" name="file_id" hidden="">
+              <input id="uploading-transfer-nid" name="node_id" hidden="">
+              <input id="uploading-transfer-fh" name="f_host" hidden="">
+              <button id="uploading-transfer-button" class="btn btn-primary btn-block" title="Transfer to portal">Transfer</button>
+            </form>
+          </div>
+       </div>
+       <div id="uploading-footer" class="modal-footer">
+          <button id="uploading-abort-button" class="btn" data-dismiss="modal" title="Abort the upload">Abort</button>
+       </div>
+    </div>
+
+    <div id="upload-disabled-modal" class="modal  font-gotham hide" data-backdrop="static">
+       <div class="modal-header">
+          <h3 id="upload-disabled-header-text"><img class="custom-logo" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACgAAAAoCAYAAACM/rhtAAADFUlEQVRYR+2XQUhUURSGz1AIhmEOCIKQCUYRCLpxa+7cldtaVLQNdFPQpqxNixYptI1q07bauSu3bhSEIBCMIBAESxCEIIzvwv84c+e+RufOiNBcGBjePffd//znP/+9r2InfFQCvtnVgxOJc3G80gGYVZkOg1n0mdl/weD7u8N2rvtUHVd33n0Pz1/MDCZ5/LX/x2ZebYa5+ekBmxzpqYubung2r4uvjvTYp3sjSQALy9v2cX23dJ5FUy83bO3Hvm0+upJMssLI8UHAAXL46Rf7tvO7APr6xnm7PtprsAjDAPm8sVfMwyygPqzv2vLGnhEfx4TgHA1eqHaFTdiYl/sxNthtq/cvBdDEpTZXEsQAmCTrRg5ANrg9UU1nbhZKC7sqpWeQZ0qC/0+Wtmx+aat1AFUihK7MYerx9EAoKwPwJBEDBLTAUgHWeYkAHF1mlZiuE5g3KztFJ85O9ofNAM4QAF9iQCuJucl+uzbaW0iEpCh5wXazJVbX9T1cL8ry89lo0BKbCzQAsBkP8GBhzFhHEsTTTIqnoRaXt/MAqnSlunFKkhTwO7ECQJ+EwtV0NQ3VDIN0JzqJrSVphmaBQfzQA0Rj48+/1iyRbLIAypgpiXRE5moG7Yi3qSuZ5+cBEhcnmNLrkX0QjaAZslenwRBai4d0Fj+nxLG1+BOpaQalEV7uPY1yp85iElA3e5DyRuaUpFgmzq870lksS0htFptwmR71XCB9HPbij0sS7ztzOu8sVrkqc2v/xFRjvmZBEv6WA5u6OOiU4SQ6NoB06FC1q2gsQOioLAOHbLJvMzGDMJW6/0ljvvsBSezblZ1Ci6zX9S0w+uBya0vcCGDcvV4XdeA4j5sxav/Sw2pQJqy18UlCOWEOkN7CTiTAGvCtZvAwJU6dwzDrWSxijhugBydAPJNh14G8OdTaJikzw5TN6MZ9rDZTBjA2ankgH03+s0BMqqNbZtSNjrbUvD62/KdBHJdt1GXfxI0AU1a0p8sEIG9NVOuWHemy0GjTtszndnFbQPmXdgDmUtxhsGUM5r6ojev/Aq30WEeR3otHAAAAAElFTkSuQmCC">  Uploads Disabled</h3>
+       </div>
+       <div id="upload-disabled-body" class="modal-body">
+          File uploads have been blocked according to your corporate policy.
+          Please contact your administrator for assistance.
+       </div>
+       <div id="upload-disabled-footer" class="modal-footer">
+          <button id="upload-disabled-ok-button" class="btn" data-dismiss="modal" title="Close this dialog">Ok</button>
+       </div>
+    </div>
+
+    <div id="upload-blocked-modal" class="modal  font-gotham hide" data-backdrop="static">
+       <div class="modal-header">
+          <h3 id="upload-blocked-header-text"><img class="custom-logo" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACgAAAAoCAYAAACM/rhtAAADFUlEQVRYR+2XQUhUURSGz1AIhmEOCIKQCUYRCLpxa+7cldtaVLQNdFPQpqxNixYptI1q07bauSu3bhSEIBCMIBAESxCEIIzvwv84c+e+RufOiNBcGBjePffd//znP/+9r2InfFQCvtnVgxOJc3G80gGYVZkOg1n0mdl/weD7u8N2rvtUHVd33n0Pz1/MDCZ5/LX/x2ZebYa5+ekBmxzpqYubung2r4uvjvTYp3sjSQALy9v2cX23dJ5FUy83bO3Hvm0+upJMssLI8UHAAXL46Rf7tvO7APr6xnm7PtprsAjDAPm8sVfMwyygPqzv2vLGnhEfx4TgHA1eqHaFTdiYl/sxNthtq/cvBdDEpTZXEsQAmCTrRg5ANrg9UU1nbhZKC7sqpWeQZ0qC/0+Wtmx+aat1AFUihK7MYerx9EAoKwPwJBEDBLTAUgHWeYkAHF1mlZiuE5g3KztFJ85O9ofNAM4QAF9iQCuJucl+uzbaW0iEpCh5wXazJVbX9T1cL8ry89lo0BKbCzQAsBkP8GBhzFhHEsTTTIqnoRaXt/MAqnSlunFKkhTwO7ECQJ+EwtV0NQ3VDIN0JzqJrSVphmaBQfzQA0Rj48+/1iyRbLIAypgpiXRE5moG7Yi3qSuZ5+cBEhcnmNLrkX0QjaAZslenwRBai4d0Fj+nxLG1+BOpaQalEV7uPY1yp85iElA3e5DyRuaUpFgmzq870lksS0htFptwmR71XCB9HPbij0sS7ztzOu8sVrkqc2v/xFRjvmZBEv6WA5u6OOiU4SQ6NoB06FC1q2gsQOioLAOHbLJvMzGDMJW6/0ljvvsBSezblZ1Ci6zX9S0w+uBya0vcCGDcvV4XdeA4j5sxav/Sw2pQJqy18UlCOWEOkN7CTiTAGvCtZvAwJU6dwzDrWSxijhugBydAPJNh14G8OdTaJikzw5TN6MZ9rDZTBjA2ankgH03+s0BMqqNbZtSNjrbUvD62/KdBHJdt1GXfxI0AU1a0p8sEIG9NVOuWHemy0GjTtszndnFbQPmXdgDmUtxhsGUM5r6ojev/Aq30WEeR3otHAAAAAElFTkSuQmCC">  Upload Blocked</h3>
+       </div>
+       <div id="upload-blocked-body" class="modal-body">
+          This file upload has been blocked in accordance with your corporate policy.
+          Please contact your administrator for assistance.
+       </div>
+       <div id="upload-blocked-footer" class="modal-footer">
+          <button id="upload-blocked-ok-button" class="btn" data-dismiss="modal" title="Close this dialog">Ok</button>
+       </div>
+    </div>
+
+    <div id="dlp-blocked-modal" class="modal  font-gotham hide" data-backdrop="static">
+       <div class="modal-header">
+          <h3 id="dlp-blocked-header-text"><img class="custom-logo" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACgAAAAoCAYAAACM/rhtAAADFUlEQVRYR+2XQUhUURSGz1AIhmEOCIKQCUYRCLpxa+7cldtaVLQNdFPQpqxNixYptI1q07bauSu3bhSEIBCMIBAESxCEIIzvwv84c+e+RufOiNBcGBjePffd//znP/+9r2InfFQCvtnVgxOJc3G80gGYVZkOg1n0mdl/weD7u8N2rvtUHVd33n0Pz1/MDCZ5/LX/x2ZebYa5+ekBmxzpqYubung2r4uvjvTYp3sjSQALy9v2cX23dJ5FUy83bO3Hvm0+upJMssLI8UHAAXL46Rf7tvO7APr6xnm7PtprsAjDAPm8sVfMwyygPqzv2vLGnhEfx4TgHA1eqHaFTdiYl/sxNthtq/cvBdDEpTZXEsQAmCTrRg5ANrg9UU1nbhZKC7sqpWeQZ0qC/0+Wtmx+aat1AFUihK7MYerx9EAoKwPwJBEDBLTAUgHWeYkAHF1mlZiuE5g3KztFJ85O9ofNAM4QAF9iQCuJucl+uzbaW0iEpCh5wXazJVbX9T1cL8ry89lo0BKbCzQAsBkP8GBhzFhHEsTTTIqnoRaXt/MAqnSlunFKkhTwO7ECQJ+EwtV0NQ3VDIN0JzqJrSVphmaBQfzQA0Rj48+/1iyRbLIAypgpiXRE5moG7Yi3qSuZ5+cBEhcnmNLrkX0QjaAZslenwRBai4d0Fj+nxLG1+BOpaQalEV7uPY1yp85iElA3e5DyRuaUpFgmzq870lksS0htFptwmR71XCB9HPbij0sS7ztzOu8sVrkqc2v/xFRjvmZBEv6WA5u6OOiU4SQ6NoB06FC1q2gsQOioLAOHbLJvMzGDMJW6/0ljvvsBSezblZ1Ci6zX9S0w+uBya0vcCGDcvV4XdeA4j5sxav/Sw2pQJqy18UlCOWEOkN7CTiTAGvCtZvAwJU6dwzDrWSxijhugBydAPJNh14G8OdTaJikzw5TN6MZ9rDZTBjA2ankgH03+s0BMqqNbZtSNjrbUvD62/KdBHJdt1GXfxI0AU1a0p8sEIG9NVOuWHemy0GjTtszndnFbQPmXdgDmUtxhsGUM5r6ojev/Aq30WEeR3otHAAAAAElFTkSuQmCC">  Content Blocked by DLP</h3>
+       </div>
+       <div id="dlp-blocked-body" class="modal-body">
+          
+             You have attempted to submit unprotected information that appears to contain AXP Restricted or AXP Secret data to an unapproved Web site. If you have questions or need assistance, please send an email to DLP.Event.Management@aexp.com
+          
+       </div>
+       <div id="dlp-blocked-footer" class="modal-footer">
+          <button id="dlp-blocked-ok-button" class="btn" data-dismiss="modal" title="Close this dialog">Ok</button>
+       </div>
+    </div>
+
+    <div id="dlp-or-network-upload-blocked-modal" class="modal  font-gotham hide" data-backdrop="static">
+       <div class="modal-header">
+          <h3 id="dlp-or-network-upload-blocked-header-text"><img class="custom-logo" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACgAAAAoCAYAAACM/rhtAAADFUlEQVRYR+2XQUhUURSGz1AIhmEOCIKQCUYRCLpxa+7cldtaVLQNdFPQpqxNixYptI1q07bauSu3bhSEIBCMIBAESxCEIIzvwv84c+e+RufOiNBcGBjePffd//znP/+9r2InfFQCvtnVgxOJc3G80gGYVZkOg1n0mdl/weD7u8N2rvtUHVd33n0Pz1/MDCZ5/LX/x2ZebYa5+ekBmxzpqYubung2r4uvjvTYp3sjSQALy9v2cX23dJ5FUy83bO3Hvm0+upJMssLI8UHAAXL46Rf7tvO7APr6xnm7PtprsAjDAPm8sVfMwyygPqzv2vLGnhEfx4TgHA1eqHaFTdiYl/sxNthtq/cvBdDEpTZXEsQAmCTrRg5ANrg9UU1nbhZKC7sqpWeQZ0qC/0+Wtmx+aat1AFUihK7MYerx9EAoKwPwJBEDBLTAUgHWeYkAHF1mlZiuE5g3KztFJ85O9ofNAM4QAF9iQCuJucl+uzbaW0iEpCh5wXazJVbX9T1cL8ry89lo0BKbCzQAsBkP8GBhzFhHEsTTTIqnoRaXt/MAqnSlunFKkhTwO7ECQJ+EwtV0NQ3VDIN0JzqJrSVphmaBQfzQA0Rj48+/1iyRbLIAypgpiXRE5moG7Yi3qSuZ5+cBEhcnmNLrkX0QjaAZslenwRBai4d0Fj+nxLG1+BOpaQalEV7uPY1yp85iElA3e5DyRuaUpFgmzq870lksS0htFptwmR71XCB9HPbij0sS7ztzOu8sVrkqc2v/xFRjvmZBEv6WA5u6OOiU4SQ6NoB06FC1q2gsQOioLAOHbLJvMzGDMJW6/0ljvvsBSezblZ1Ci6zX9S0w+uBya0vcCGDcvV4XdeA4j5sxav/Sw2pQJqy18UlCOWEOkN7CTiTAGvCtZvAwJU6dwzDrWSxijhugBydAPJNh14G8OdTaJikzw5TN6MZ9rDZTBjA2ankgH03+s0BMqqNbZtSNjrbUvD62/KdBHJdt1GXfxI0AU1a0p8sEIG9NVOuWHemy0GjTtszndnFbQPmXdgDmUtxhsGUM5r6ojev/Aq30WEeR3otHAAAAAElFTkSuQmCC">  Upload Failed</h3>
+       </div>
+       <div id="dlp-or-network-upload-blocked-body" class="modal-body">
+          
+             You have attempted to submit unprotected information that appears to contain AXP Restricted or AXP Secret data to an unapproved Web site. If you have questions or need assistance, please send an email to DLP.Event.Management@aexp.com
+          
+       </div>
+       <div id="dlp-or-network-upload-blocked-footer" class="modal-footer">
+          <button id="dlp-or-network-upload-blocked-ok-button" class="btn" data-dismiss="modal" title="Close this dialog">Ok</button>
+       </div>
+    </div>
+
+    <div id="download-disabled-modal" class="modal  font-gotham hide" data-backdrop="static">
+       <div class="modal-header">
+          <h3 id="download-disabled-header-text"><img class="custom-logo" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACgAAAAoCAYAAACM/rhtAAADFUlEQVRYR+2XQUhUURSGz1AIhmEOCIKQCUYRCLpxa+7cldtaVLQNdFPQpqxNixYptI1q07bauSu3bhSEIBCMIBAESxCEIIzvwv84c+e+RufOiNBcGBjePffd//znP/+9r2InfFQCvtnVgxOJc3G80gGYVZkOg1n0mdl/weD7u8N2rvtUHVd33n0Pz1/MDCZ5/LX/x2ZebYa5+ekBmxzpqYubung2r4uvjvTYp3sjSQALy9v2cX23dJ5FUy83bO3Hvm0+upJMssLI8UHAAXL46Rf7tvO7APr6xnm7PtprsAjDAPm8sVfMwyygPqzv2vLGnhEfx4TgHA1eqHaFTdiYl/sxNthtq/cvBdDEpTZXEsQAmCTrRg5ANrg9UU1nbhZKC7sqpWeQZ0qC/0+Wtmx+aat1AFUihK7MYerx9EAoKwPwJBEDBLTAUgHWeYkAHF1mlZiuE5g3KztFJ85O9ofNAM4QAF9iQCuJucl+uzbaW0iEpCh5wXazJVbX9T1cL8ry89lo0BKbCzQAsBkP8GBhzFhHEsTTTIqnoRaXt/MAqnSlunFKkhTwO7ECQJ+EwtV0NQ3VDIN0JzqJrSVphmaBQfzQA0Rj48+/1iyRbLIAypgpiXRE5moG7Yi3qSuZ5+cBEhcnmNLrkX0QjaAZslenwRBai4d0Fj+nxLG1+BOpaQalEV7uPY1yp85iElA3e5DyRuaUpFgmzq870lksS0htFptwmR71XCB9HPbij0sS7ztzOu8sVrkqc2v/xFRjvmZBEv6WA5u6OOiU4SQ6NoB06FC1q2gsQOioLAOHbLJvMzGDMJW6/0ljvvsBSezblZ1Ci6zX9S0w+uBya0vcCGDcvV4XdeA4j5sxav/Sw2pQJqy18UlCOWEOkN7CTiTAGvCtZvAwJU6dwzDrWSxijhugBydAPJNh14G8OdTaJikzw5TN6MZ9rDZTBjA2ankgH03+s0BMqqNbZtSNjrbUvD62/KdBHJdt1GXfxI0AU1a0p8sEIG9NVOuWHemy0GjTtszndnFbQPmXdgDmUtxhsGUM5r6ojev/Aq30WEeR3otHAAAAAElFTkSuQmCC">  Downloads Disabled</h3>
+       </div>
+       <div id="download-disabled-body" class="modal-body">
+       File download via Menlo Security is not permitted.
+       </div>
+       <div id="download-disabled-footer" class="modal-footer">
+          <button id="download-disabled-ok-button" class="btn" data-dismiss="modal" title="Close this dialog">Ok</button>
+       </div>
+    </div>
+
+    <div id="docview-iframe-modal" class="modal  font-gotham hide" data-backdrop="static" style="position:fixed; top: 1%; left: 1%;right: 1%;width:98%; height:100%; margin:0">
+       <div class="modal-header" style="padding:0px; padding-right:10px">
+          <button id="docview-exit-button" class="close" data-dismiss="modal" tabindex="0">×</button>
+       </div>
+       <div class="modal-body" style="width:97%; height:97%; max-height: 95%; overflow-y: hidden; border:1px">
+          <iframe id="docview-content" src="./saved_resource(1).html" style="left: 5%; width: 100%; height: 100%; border:0px"></iframe>
+       </div>
+    </div>
+
+    <div id="download-modal" class="modal  font-gotham hide" data-backdrop="static">
+       <div id="downloading-modal-progress" class="hide">
+          <div class="modal-header">
+             <h3 id="downloading-header-text"><img class="custom-logo" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACgAAAAoCAYAAACM/rhtAAADFUlEQVRYR+2XQUhUURSGz1AIhmEOCIKQCUYRCLpxa+7cldtaVLQNdFPQpqxNixYptI1q07bauSu3bhSEIBCMIBAESxCEIIzvwv84c+e+RufOiNBcGBjePffd//znP/+9r2InfFQCvtnVgxOJc3G80gGYVZkOg1n0mdl/weD7u8N2rvtUHVd33n0Pz1/MDCZ5/LX/x2ZebYa5+ekBmxzpqYubung2r4uvjvTYp3sjSQALy9v2cX23dJ5FUy83bO3Hvm0+upJMssLI8UHAAXL46Rf7tvO7APr6xnm7PtprsAjDAPm8sVfMwyygPqzv2vLGnhEfx4TgHA1eqHaFTdiYl/sxNthtq/cvBdDEpTZXEsQAmCTrRg5ANrg9UU1nbhZKC7sqpWeQZ0qC/0+Wtmx+aat1AFUihK7MYerx9EAoKwPwJBEDBLTAUgHWeYkAHF1mlZiuE5g3KztFJ85O9ofNAM4QAF9iQCuJucl+uzbaW0iEpCh5wXazJVbX9T1cL8ry89lo0BKbCzQAsBkP8GBhzFhHEsTTTIqnoRaXt/MAqnSlunFKkhTwO7ECQJ+EwtV0NQ3VDIN0JzqJrSVphmaBQfzQA0Rj48+/1iyRbLIAypgpiXRE5moG7Yi3qSuZ5+cBEhcnmNLrkX0QjaAZslenwRBai4d0Fj+nxLG1+BOpaQalEV7uPY1yp85iElA3e5DyRuaUpFgmzq870lksS0htFptwmR71XCB9HPbij0sS7ztzOu8sVrkqc2v/xFRjvmZBEv6WA5u6OOiU4SQ6NoB06FC1q2gsQOioLAOHbLJvMzGDMJW6/0ljvvsBSezblZ1Ci6zX9S0w+uBya0vcCGDcvV4XdeA4j5sxav/Sw2pQJqy18UlCOWEOkN7CTiTAGvCtZvAwJU6dwzDrWSxijhugBydAPJNh14G8OdTaJikzw5TN6MZ9rDZTBjA2ankgH03+s0BMqqNbZtSNjrbUvD62/KdBHJdt1GXfxI0AU1a0p8sEIG9NVOuWHemy0GjTtszndnFbQPmXdgDmUtxhsGUM5r6ojev/Aq30WEeR3otHAAAAAElFTkSuQmCC"> File Download in Progress</h3>
+          </div>
+          <div id="downloading-body" class="modal-body">
+             <p id="downloading-msg">Preparing the following file for download:<b><span id="downloading-stats"></span></b></p>
+             <p><b><span id="downloading-filename"></span></b></p>
+             <div id="downloading-progress-bar" class="progress progress-striped active">
+                <div id="downloading-progress" class="bar" style="width: 0%;"></div>
+             </div>
+             <div id="file-analysis-div">
+                <p id="scanning-msg" class="hide">Quick scanning the file before download.</p>
+                <p id="scanprep-msg" class="hide">Preparing to perform a full scan of the file before download.</p>
+                <p id="fullscan-msg" class="hide">Scanning the file.</p>
+                <p id="scandone-msg" class="hide">Completing the scan of the file. Please wait.</p>
+                <p id="extract-msg" class="hide">Performing further analysis on the following file. Please wait, this may take several minutes.</p>
+                <div id="file-analysis-spinner" class="hide" style="text-align:center"><img id="file-analysis-spinner-logo" class="icon" width="28" src="https://isolate.menlosecurity.com/https://raw.githubusercontent.com/CorndelWithSoftwire/SupportBank-Java/master/DodgyTransactions2015.csv"></div>
+             </div>
+          </div>
+          <div id="download-href" class="hide" style="display: none;">&nbsp;</div>
+          <div id="downloading-footer" class="modal-footer">
+             <button id="downloading-cancel-button" class="btn" data-dismiss="modal" title="Cancel the download">Cancel</button>
+          </div>
+       </div>
+       <div id="download-modal-blocked" class="hide">
+          <div class="modal-header">
+             <button id="db-alert-escape-button" class="close" data-dismiss="modal" tabindex="0">×</button>
+             <h4>
+               <img class="custom-logo" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACgAAAAoCAYAAACM/rhtAAADFUlEQVRYR+2XQUhUURSGz1AIhmEOCIKQCUYRCLpxa+7cldtaVLQNdFPQpqxNixYptI1q07bauSu3bhSEIBCMIBAESxCEIIzvwv84c+e+RufOiNBcGBjePffd//znP/+9r2InfFQCvtnVgxOJc3G80gGYVZkOg1n0mdl/weD7u8N2rvtUHVd33n0Pz1/MDCZ5/LX/x2ZebYa5+ekBmxzpqYubung2r4uvjvTYp3sjSQALy9v2cX23dJ5FUy83bO3Hvm0+upJMssLI8UHAAXL46Rf7tvO7APr6xnm7PtprsAjDAPm8sVfMwyygPqzv2vLGnhEfx4TgHA1eqHaFTdiYl/sxNthtq/cvBdDEpTZXEsQAmCTrRg5ANrg9UU1nbhZKC7sqpWeQZ0qC/0+Wtmx+aat1AFUihK7MYerx9EAoKwPwJBEDBLTAUgHWeYkAHF1mlZiuE5g3KztFJ85O9ofNAM4QAF9iQCuJucl+uzbaW0iEpCh5wXazJVbX9T1cL8ry89lo0BKbCzQAsBkP8GBhzFhHEsTTTIqnoRaXt/MAqnSlunFKkhTwO7ECQJ+EwtV0NQ3VDIN0JzqJrSVphmaBQfzQA0Rj48+/1iyRbLIAypgpiXRE5moG7Yi3qSuZ5+cBEhcnmNLrkX0QjaAZslenwRBai4d0Fj+nxLG1+BOpaQalEV7uPY1yp85iElA3e5DyRuaUpFgmzq870lksS0htFptwmR71XCB9HPbij0sS7ztzOu8sVrkqc2v/xFRjvmZBEv6WA5u6OOiU4SQ6NoB06FC1q2gsQOioLAOHbLJvMzGDMJW6/0ljvvsBSezblZ1Ci6zX9S0w+uBya0vcCGDcvV4XdeA4j5sxav/Sw2pQJqy18UlCOWEOkN7CTiTAGvCtZvAwJU6dwzDrWSxijhugBydAPJNh14G8OdTaJikzw5TN6MZ9rDZTBjA2ankgH03+s0BMqqNbZtSNjrbUvD62/KdBHJdt1GXfxI0AU1a0p8sEIG9NVOuWHemy0GjTtszndnFbQPmXdgDmUtxhsGUM5r6ojev/Aq30WEeR3otHAAAAAElFTkSuQmCC"> 
+               <span>Download Blocked</span>
+            </h4>
+          </div>
+          <div class="modal-body">
+             <p id="db-block-msg">&nbsp;</p>
+             <p>Name: <b id="db-block-filename"></b></p>
+          </div>
+          <div class="modal-footer">
+             <a href="https://isolate.menlosecurity.com/https://raw.githubusercontent.com/CorndelWithSoftwire/SupportBank-Java/master/DodgyTransactions2015.csv#" id="db-alert-ok-button" class="btn" data-dismiss="modal" tabindex="1">OK</a>
+          </div>
+       </div>
+       <div id="download-modal-error" class="hide">
+          <div class="modal-header">
+             <button id="dm-error-escape-button" class="close" data-dismiss="modal" tabindex="0">×</button>
+             <h4>
+               <img class="custom-logo" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACgAAAAoCAYAAACM/rhtAAADFUlEQVRYR+2XQUhUURSGz1AIhmEOCIKQCUYRCLpxa+7cldtaVLQNdFPQpqxNixYptI1q07bauSu3bhSEIBCMIBAESxCEIIzvwv84c+e+RufOiNBcGBjePffd//znP/+9r2InfFQCvtnVgxOJc3G80gGYVZkOg1n0mdl/weD7u8N2rvtUHVd33n0Pz1/MDCZ5/LX/x2ZebYa5+ekBmxzpqYubung2r4uvjvTYp3sjSQALy9v2cX23dJ5FUy83bO3Hvm0+upJMssLI8UHAAXL46Rf7tvO7APr6xnm7PtprsAjDAPm8sVfMwyygPqzv2vLGnhEfx4TgHA1eqHaFTdiYl/sxNthtq/cvBdDEpTZXEsQAmCTrRg5ANrg9UU1nbhZKC7sqpWeQZ0qC/0+Wtmx+aat1AFUihK7MYerx9EAoKwPwJBEDBLTAUgHWeYkAHF1mlZiuE5g3KztFJ85O9ofNAM4QAF9iQCuJucl+uzbaW0iEpCh5wXazJVbX9T1cL8ry89lo0BKbCzQAsBkP8GBhzFhHEsTTTIqnoRaXt/MAqnSlunFKkhTwO7ECQJ+EwtV0NQ3VDIN0JzqJrSVphmaBQfzQA0Rj48+/1iyRbLIAypgpiXRE5moG7Yi3qSuZ5+cBEhcnmNLrkX0QjaAZslenwRBai4d0Fj+nxLG1+BOpaQalEV7uPY1yp85iElA3e5DyRuaUpFgmzq870lksS0htFptwmR71XCB9HPbij0sS7ztzOu8sVrkqc2v/xFRjvmZBEv6WA5u6OOiU4SQ6NoB06FC1q2gsQOioLAOHbLJvMzGDMJW6/0ljvvsBSezblZ1Ci6zX9S0w+uBya0vcCGDcvV4XdeA4j5sxav/Sw2pQJqy18UlCOWEOkN7CTiTAGvCtZvAwJU6dwzDrWSxijhugBydAPJNh14G8OdTaJikzw5TN6MZ9rDZTBjA2ankgH03+s0BMqqNbZtSNjrbUvD62/KdBHJdt1GXfxI0AU1a0p8sEIG9NVOuWHemy0GjTtszndnFbQPmXdgDmUtxhsGUM5r6ojev/Aq30WEeR3otHAAAAAElFTkSuQmCC"> 
+               <span>Error Occurred</span>
+            </h4>
+          </div>
+          <div class="modal-body">
+             <p>Unexpected error occurred while processing the following file:</p>
+             <p>Name: <b id="dm-error-filename"></b></p>
+             <p>Please retry. If this condition persists please contact your administrator.</p>
+          </div>
+          <div class="modal-footer">
+             <a href="https://isolate.menlosecurity.com/https://raw.githubusercontent.com/CorndelWithSoftwire/SupportBank-Java/master/DodgyTransactions2015.csv#" id="dm-error-ok-button" class="btn" data-dismiss="modal" tabindex="1">OK</a>
+          </div>
+       </div>
+    </div>
+
+    <div id="alert-modal" class="modal  font-gotham hide" data-backdrop="static">
+       <div class="modal-header">
+          <button id="alert-escape-button" class="close" data-dismiss="modal" tabindex="0">×</button>
+          <h4><span id="alert-header-text"></span></h4>
+       </div>
+       <div id="alert-body" class="modal-body">
+          <p><b><span id="alert-message"></span></b></p>
+       </div>
+       <div id="alert-footer" class="modal-footer">
+          <a href="https://isolate.menlosecurity.com/https://raw.githubusercontent.com/CorndelWithSoftwire/SupportBank-Java/master/DodgyTransactions2015.csv#" id="alert-ok-button" class="btn" data-dismiss="modal" tabindex="1">OK</a>
+       </div>
+    </div>
+
+    <div id="confirm-modal" class="modal  font-gotham hide" data-backdrop="static">
+       <div class="modal-header">
+          <button id="confirm-escape-button" class="close" data-dismiss="modal">×</button>
+          <h4><img class="custom-logo" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACgAAAAoCAYAAACM/rhtAAADFUlEQVRYR+2XQUhUURSGz1AIhmEOCIKQCUYRCLpxa+7cldtaVLQNdFPQpqxNixYptI1q07bauSu3bhSEIBCMIBAESxCEIIzvwv84c+e+RufOiNBcGBjePffd//znP/+9r2InfFQCvtnVgxOJc3G80gGYVZkOg1n0mdl/weD7u8N2rvtUHVd33n0Pz1/MDCZ5/LX/x2ZebYa5+ekBmxzpqYubung2r4uvjvTYp3sjSQALy9v2cX23dJ5FUy83bO3Hvm0+upJMssLI8UHAAXL46Rf7tvO7APr6xnm7PtprsAjDAPm8sVfMwyygPqzv2vLGnhEfx4TgHA1eqHaFTdiYl/sxNthtq/cvBdDEpTZXEsQAmCTrRg5ANrg9UU1nbhZKC7sqpWeQZ0qC/0+Wtmx+aat1AFUihK7MYerx9EAoKwPwJBEDBLTAUgHWeYkAHF1mlZiuE5g3KztFJ85O9ofNAM4QAF9iQCuJucl+uzbaW0iEpCh5wXazJVbX9T1cL8ry89lo0BKbCzQAsBkP8GBhzFhHEsTTTIqnoRaXt/MAqnSlunFKkhTwO7ECQJ+EwtV0NQ3VDIN0JzqJrSVphmaBQfzQA0Rj48+/1iyRbLIAypgpiXRE5moG7Yi3qSuZ5+cBEhcnmNLrkX0QjaAZslenwRBai4d0Fj+nxLG1+BOpaQalEV7uPY1yp85iElA3e5DyRuaUpFgmzq870lksS0htFptwmR71XCB9HPbij0sS7ztzOu8sVrkqc2v/xFRjvmZBEv6WA5u6OOiU4SQ6NoB06FC1q2gsQOioLAOHbLJvMzGDMJW6/0ljvvsBSezblZ1Ci6zX9S0w+uBya0vcCGDcvV4XdeA4j5sxav/Sw2pQJqy18UlCOWEOkN7CTiTAGvCtZvAwJU6dwzDrWSxijhugBydAPJNh14G8OdTaJikzw5TN6MZ9rDZTBjA2ankgH03+s0BMqqNbZtSNjrbUvD62/KdBHJdt1GXfxI0AU1a0p8sEIG9NVOuWHemy0GjTtszndnFbQPmXdgDmUtxhsGUM5r6ojev/Aq30WEeR3otHAAAAAElFTkSuQmCC">  <span id="confirm-header-text"></span></h4>
+       </div>
+       <div id="confirm-body" class="modal-body">
+          <p><b><span id="confirm-message"></span></b></p>
+       </div>
+       <div id="confirm-footer" class="modal-footer">
+          <a href="https://isolate.menlosecurity.com/https://raw.githubusercontent.com/CorndelWithSoftwire/SupportBank-Java/master/DodgyTransactions2015.csv#" id="confirm-cancel-button" class="btn" data-dismiss="modal">Cancel</a>
+          <a href="https://isolate.menlosecurity.com/https://raw.githubusercontent.com/CorndelWithSoftwire/SupportBank-Java/master/DodgyTransactions2015.csv#" id="confirm-ok-button" class="btn btn-primary" data-dismiss="modal">OK</a>
+       </div>
+    </div>
+
+    <div id="prompt-modal" class="modal  font-gotham hide" data-backdrop="static">
+       <div class="modal-header">
+          <button id="prompt-escape-button" class="close" data-dismiss="modal">×</button>
+          <h4><img class="custom-logo" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACgAAAAoCAYAAACM/rhtAAADFUlEQVRYR+2XQUhUURSGz1AIhmEOCIKQCUYRCLpxa+7cldtaVLQNdFPQpqxNixYptI1q07bauSu3bhSEIBCMIBAESxCEIIzvwv84c+e+RufOiNBcGBjePffd//znP/+9r2InfFQCvtnVgxOJc3G80gGYVZkOg1n0mdl/weD7u8N2rvtUHVd33n0Pz1/MDCZ5/LX/x2ZebYa5+ekBmxzpqYubung2r4uvjvTYp3sjSQALy9v2cX23dJ5FUy83bO3Hvm0+upJMssLI8UHAAXL46Rf7tvO7APr6xnm7PtprsAjDAPm8sVfMwyygPqzv2vLGnhEfx4TgHA1eqHaFTdiYl/sxNthtq/cvBdDEpTZXEsQAmCTrRg5ANrg9UU1nbhZKC7sqpWeQZ0qC/0+Wtmx+aat1AFUihK7MYerx9EAoKwPwJBEDBLTAUgHWeYkAHF1mlZiuE5g3KztFJ85O9ofNAM4QAF9iQCuJucl+uzbaW0iEpCh5wXazJVbX9T1cL8ry89lo0BKbCzQAsBkP8GBhzFhHEsTTTIqnoRaXt/MAqnSlunFKkhTwO7ECQJ+EwtV0NQ3VDIN0JzqJrSVphmaBQfzQA0Rj48+/1iyRbLIAypgpiXRE5moG7Yi3qSuZ5+cBEhcnmNLrkX0QjaAZslenwRBai4d0Fj+nxLG1+BOpaQalEV7uPY1yp85iElA3e5DyRuaUpFgmzq870lksS0htFptwmR71XCB9HPbij0sS7ztzOu8sVrkqc2v/xFRjvmZBEv6WA5u6OOiU4SQ6NoB06FC1q2gsQOioLAOHbLJvMzGDMJW6/0ljvvsBSezblZ1Ci6zX9S0w+uBya0vcCGDcvV4XdeA4j5sxav/Sw2pQJqy18UlCOWEOkN7CTiTAGvCtZvAwJU6dwzDrWSxijhugBydAPJNh14G8OdTaJikzw5TN6MZ9rDZTBjA2ankgH03+s0BMqqNbZtSNjrbUvD62/KdBHJdt1GXfxI0AU1a0p8sEIG9NVOuWHemy0GjTtszndnFbQPmXdgDmUtxhsGUM5r6ojev/Aq30WEeR3otHAAAAAElFTkSuQmCC">  <span id="prompt-header-text"></span></h4>
+       </div>
+       <div id="prompt-body" class="modal-body">
+        <p><b><span id="prompt-message"></span></b></p>
+        <input class="input-medium" id="prompt-input" type="text" size="20" style="width: 500px; cursor: pointer;">
+       </div>
+       <div id="prompt-footer" class="modal-footer">
+          <a href="https://isolate.menlosecurity.com/https://raw.githubusercontent.com/CorndelWithSoftwire/SupportBank-Java/master/DodgyTransactions2015.csv#" id="prompt-cancel-button" class="btn" data-dismiss="modal">Cancel</a>
+          <a href="https://isolate.menlosecurity.com/https://raw.githubusercontent.com/CorndelWithSoftwire/SupportBank-Java/master/DodgyTransactions2015.csv#" id="prompt-ok-button" class="btn btn-primary" data-dismiss="modal">OK</a>
+       </div>
+    </div>
+
+    <div id="httpauth-modal" class="modal  font-gotham hide" data-backdrop="static">
+       <div class="modal-header">
+          <button id="httpauth-escape-button" class="close" data-dismiss="modal">×</button>
+          <h4><img class="custom-logo" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACgAAAAoCAYAAACM/rhtAAADFUlEQVRYR+2XQUhUURSGz1AIhmEOCIKQCUYRCLpxa+7cldtaVLQNdFPQpqxNixYptI1q07bauSu3bhSEIBCMIBAESxCEIIzvwv84c+e+RufOiNBcGBjePffd//znP/+9r2InfFQCvtnVgxOJc3G80gGYVZkOg1n0mdl/weD7u8N2rvtUHVd33n0Pz1/MDCZ5/LX/x2ZebYa5+ekBmxzpqYubung2r4uvjvTYp3sjSQALy9v2cX23dJ5FUy83bO3Hvm0+upJMssLI8UHAAXL46Rf7tvO7APr6xnm7PtprsAjDAPm8sVfMwyygPqzv2vLGnhEfx4TgHA1eqHaFTdiYl/sxNthtq/cvBdDEpTZXEsQAmCTrRg5ANrg9UU1nbhZKC7sqpWeQZ0qC/0+Wtmx+aat1AFUihK7MYerx9EAoKwPwJBEDBLTAUgHWeYkAHF1mlZiuE5g3KztFJ85O9ofNAM4QAF9iQCuJucl+uzbaW0iEpCh5wXazJVbX9T1cL8ry89lo0BKbCzQAsBkP8GBhzFhHEsTTTIqnoRaXt/MAqnSlunFKkhTwO7ECQJ+EwtV0NQ3VDIN0JzqJrSVphmaBQfzQA0Rj48+/1iyRbLIAypgpiXRE5moG7Yi3qSuZ5+cBEhcnmNLrkX0QjaAZslenwRBai4d0Fj+nxLG1+BOpaQalEV7uPY1yp85iElA3e5DyRuaUpFgmzq870lksS0htFptwmR71XCB9HPbij0sS7ztzOu8sVrkqc2v/xFRjvmZBEv6WA5u6OOiU4SQ6NoB06FC1q2gsQOioLAOHbLJvMzGDMJW6/0ljvvsBSezblZ1Ci6zX9S0w+uBya0vcCGDcvV4XdeA4j5sxav/Sw2pQJqy18UlCOWEOkN7CTiTAGvCtZvAwJU6dwzDrWSxijhugBydAPJNh14G8OdTaJikzw5TN6MZ9rDZTBjA2ankgH03+s0BMqqNbZtSNjrbUvD62/KdBHJdt1GXfxI0AU1a0p8sEIG9NVOuWHemy0GjTtszndnFbQPmXdgDmUtxhsGUM5r6ojev/Aq30WEeR3otHAAAAAElFTkSuQmCC">  <span id="httpauth-header-text">Authentication Required</span></h4>
+       </div>
+       <div id="httpauth-body" class="modal-body">
+        <p><span id="httpauth-message"></span></p>
+        <p class="text-error"><b><span id="httpauth-warning"></span></b></p>
+        <fieldset>
+           <label class="label-httpauth">Username</label>
+           <input class="input-httpauth" id="httpauth-username-input" type="text" autofocus="">
+        </fieldset>
+        <fieldset>
+           <label class="label-httpauth">Password</label>
+           <input class="input-httpauth" id="httpauth-password-input" type="password">
+        </fieldset>
+       </div>
+       <div id="httpauth-footer" class="modal-footer">
+          <a href="https://isolate.menlosecurity.com/https://raw.githubusercontent.com/CorndelWithSoftwire/SupportBank-Java/master/DodgyTransactions2015.csv#" id="httpauth-cancel-button" class="btn" data-dismiss="modal">Cancel</a>
+          <a href="https://isolate.menlosecurity.com/https://raw.githubusercontent.com/CorndelWithSoftwire/SupportBank-Java/master/DodgyTransactions2015.csv#" id="httpauth-ok-button" class="btn btn-primary" data-dismiss="modal">OK</a>
+       </div>
+    </div>
+
+    <div id="invalid-cert-modal" class="modal  font-gotham hide" data-backdrop="static">
+       <div class="modal-header">
+          <button id="invalid-cert-escape-button" class="close" data-dismiss="modal">×</button>
+          <h4><img class="custom-logo" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACgAAAAoCAYAAACM/rhtAAADFUlEQVRYR+2XQUhUURSGz1AIhmEOCIKQCUYRCLpxa+7cldtaVLQNdFPQpqxNixYptI1q07bauSu3bhSEIBCMIBAESxCEIIzvwv84c+e+RufOiNBcGBjePffd//znP/+9r2InfFQCvtnVgxOJc3G80gGYVZkOg1n0mdl/weD7u8N2rvtUHVd33n0Pz1/MDCZ5/LX/x2ZebYa5+ekBmxzpqYubung2r4uvjvTYp3sjSQALy9v2cX23dJ5FUy83bO3Hvm0+upJMssLI8UHAAXL46Rf7tvO7APr6xnm7PtprsAjDAPm8sVfMwyygPqzv2vLGnhEfx4TgHA1eqHaFTdiYl/sxNthtq/cvBdDEpTZXEsQAmCTrRg5ANrg9UU1nbhZKC7sqpWeQZ0qC/0+Wtmx+aat1AFUihK7MYerx9EAoKwPwJBEDBLTAUgHWeYkAHF1mlZiuE5g3KztFJ85O9ofNAM4QAF9iQCuJucl+uzbaW0iEpCh5wXazJVbX9T1cL8ry89lo0BKbCzQAsBkP8GBhzFhHEsTTTIqnoRaXt/MAqnSlunFKkhTwO7ECQJ+EwtV0NQ3VDIN0JzqJrSVphmaBQfzQA0Rj48+/1iyRbLIAypgpiXRE5moG7Yi3qSuZ5+cBEhcnmNLrkX0QjaAZslenwRBai4d0Fj+nxLG1+BOpaQalEV7uPY1yp85iElA3e5DyRuaUpFgmzq870lksS0htFptwmR71XCB9HPbij0sS7ztzOu8sVrkqc2v/xFRjvmZBEv6WA5u6OOiU4SQ6NoB06FC1q2gsQOioLAOHbLJvMzGDMJW6/0ljvvsBSezblZ1Ci6zX9S0w+uBya0vcCGDcvV4XdeA4j5sxav/Sw2pQJqy18UlCOWEOkN7CTiTAGvCtZvAwJU6dwzDrWSxijhugBydAPJNh14G8OdTaJikzw5TN6MZ9rDZTBjA2ankgH03+s0BMqqNbZtSNjrbUvD62/KdBHJdt1GXfxI0AU1a0p8sEIG9NVOuWHemy0GjTtszndnFbQPmXdgDmUtxhsGUM5r6ojev/Aq30WEeR3otHAAAAAElFTkSuQmCC">  <span id="invalid-cert-header-text"></span></h4>
+       </div>
+       <div id="invalid-cert-body" class="modal-body">
+        <p><b><span id="invalid-cert-message"></span></b></p>
+        <p><b></b></p><pre id="invalid-cert-details" class="hide"></pre><p></p>
+       </div>
+       <div id="invalid-cert-footer" class="modal-footer">
+          <a href="https://isolate.menlosecurity.com/https://raw.githubusercontent.com/CorndelWithSoftwire/SupportBank-Java/master/DodgyTransactions2015.csv#" id="invalid-cert-back-button" class="btn btn-primary" data-dismiss="modal">Go Back</a>
+          <a href="https://isolate.menlosecurity.com/https://raw.githubusercontent.com/CorndelWithSoftwire/SupportBank-Java/master/DodgyTransactions2015.csv#" id="invalid-cert-proceed-button" class="btn" data-dismiss="modal">Proceed With Caution</a>
+       </div>
+    </div>
+
+    <div id="block-page-modal" class="modal  font-gotham hide" data-backdrop="static">
+       <div class="modal-header">
+          <h4><img class="custom-logo" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACgAAAAoCAYAAACM/rhtAAADFUlEQVRYR+2XQUhUURSGz1AIhmEOCIKQCUYRCLpxa+7cldtaVLQNdFPQpqxNixYptI1q07bauSu3bhSEIBCMIBAESxCEIIzvwv84c+e+RufOiNBcGBjePffd//znP/+9r2InfFQCvtnVgxOJc3G80gGYVZkOg1n0mdl/weD7u8N2rvtUHVd33n0Pz1/MDCZ5/LX/x2ZebYa5+ekBmxzpqYubung2r4uvjvTYp3sjSQALy9v2cX23dJ5FUy83bO3Hvm0+upJMssLI8UHAAXL46Rf7tvO7APr6xnm7PtprsAjDAPm8sVfMwyygPqzv2vLGnhEfx4TgHA1eqHaFTdiYl/sxNthtq/cvBdDEpTZXEsQAmCTrRg5ANrg9UU1nbhZKC7sqpWeQZ0qC/0+Wtmx+aat1AFUihK7MYerx9EAoKwPwJBEDBLTAUgHWeYkAHF1mlZiuE5g3KztFJ85O9ofNAM4QAF9iQCuJucl+uzbaW0iEpCh5wXazJVbX9T1cL8ry89lo0BKbCzQAsBkP8GBhzFhHEsTTTIqnoRaXt/MAqnSlunFKkhTwO7ECQJ+EwtV0NQ3VDIN0JzqJrSVphmaBQfzQA0Rj48+/1iyRbLIAypgpiXRE5moG7Yi3qSuZ5+cBEhcnmNLrkX0QjaAZslenwRBai4d0Fj+nxLG1+BOpaQalEV7uPY1yp85iElA3e5DyRuaUpFgmzq870lksS0htFptwmR71XCB9HPbij0sS7ztzOu8sVrkqc2v/xFRjvmZBEv6WA5u6OOiU4SQ6NoB06FC1q2gsQOioLAOHbLJvMzGDMJW6/0ljvvsBSezblZ1Ci6zX9S0w+uBya0vcCGDcvV4XdeA4j5sxav/Sw2pQJqy18UlCOWEOkN7CTiTAGvCtZvAwJU6dwzDrWSxijhugBydAPJNh14G8OdTaJikzw5TN6MZ9rDZTBjA2ankgH03+s0BMqqNbZtSNjrbUvD62/KdBHJdt1GXfxI0AU1a0p8sEIG9NVOuWHemy0GjTtszndnFbQPmXdgDmUtxhsGUM5r6ojev/Aq30WEeR3otHAAAAAElFTkSuQmCC">  <span id="block-page-header-text">Website Blocked</span></h4>
+       </div>
+       <div id="block-page-body" class="modal-body">
+          <b>
+             <p>Access to this web site has been blocked according to your corporate policy.</p><p>Please contact your administrator for assistance.</p>
+          </b>
+       </div>
+       <div id="block-page-footer" class="modal-footer">
+          <a href="https://isolate.menlosecurity.com/https://raw.githubusercontent.com/CorndelWithSoftwire/SupportBank-Java/master/DodgyTransactions2015.csv#" id="block-page-back-button" class="btn btn-primary" data-dismiss="modal">Go Back</a>
+       </div>
+    </div>
+
+    <div id="error-page-modal" class="modal  font-gotham hide" data-backdrop="static">
+       <div class="modal-header">
+          <h4><img class="custom-logo" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACgAAAAoCAYAAACM/rhtAAADFUlEQVRYR+2XQUhUURSGz1AIhmEOCIKQCUYRCLpxa+7cldtaVLQNdFPQpqxNixYptI1q07bauSu3bhSEIBCMIBAESxCEIIzvwv84c+e+RufOiNBcGBjePffd//znP/+9r2InfFQCvtnVgxOJc3G80gGYVZkOg1n0mdl/weD7u8N2rvtUHVd33n0Pz1/MDCZ5/LX/x2ZebYa5+ekBmxzpqYubung2r4uvjvTYp3sjSQALy9v2cX23dJ5FUy83bO3Hvm0+upJMssLI8UHAAXL46Rf7tvO7APr6xnm7PtprsAjDAPm8sVfMwyygPqzv2vLGnhEfx4TgHA1eqHaFTdiYl/sxNthtq/cvBdDEpTZXEsQAmCTrRg5ANrg9UU1nbhZKC7sqpWeQZ0qC/0+Wtmx+aat1AFUihK7MYerx9EAoKwPwJBEDBLTAUgHWeYkAHF1mlZiuE5g3KztFJ85O9ofNAM4QAF9iQCuJucl+uzbaW0iEpCh5wXazJVbX9T1cL8ry89lo0BKbCzQAsBkP8GBhzFhHEsTTTIqnoRaXt/MAqnSlunFKkhTwO7ECQJ+EwtV0NQ3VDIN0JzqJrSVphmaBQfzQA0Rj48+/1iyRbLIAypgpiXRE5moG7Yi3qSuZ5+cBEhcnmNLrkX0QjaAZslenwRBai4d0Fj+nxLG1+BOpaQalEV7uPY1yp85iElA3e5DyRuaUpFgmzq870lksS0htFptwmR71XCB9HPbij0sS7ztzOu8sVrkqc2v/xFRjvmZBEv6WA5u6OOiU4SQ6NoB06FC1q2gsQOioLAOHbLJvMzGDMJW6/0ljvvsBSezblZ1Ci6zX9S0w+uBya0vcCGDcvV4XdeA4j5sxav/Sw2pQJqy18UlCOWEOkN7CTiTAGvCtZvAwJU6dwzDrWSxijhugBydAPJNh14G8OdTaJikzw5TN6MZ9rDZTBjA2ankgH03+s0BMqqNbZtSNjrbUvD62/KdBHJdt1GXfxI0AU1a0p8sEIG9NVOuWHemy0GjTtszndnFbQPmXdgDmUtxhsGUM5r6ojev/Aq30WEeR3otHAAAAAElFTkSuQmCC">  <span id="error-page-title"></span></h4>
+       </div>
+       <div id="error-page-body" class="modal-body">
+          <p><b><span id="error-page-message"></span></b></p>
+          <p><b></b></p><pre id="error-page-details"></pre><p></p>
+       </div>
+       <div id="error-page-footer" class="modal-footer">
+          <a href="https://isolate.menlosecurity.com/https://raw.githubusercontent.com/CorndelWithSoftwire/SupportBank-Java/master/DodgyTransactions2015.csv#" id="error-page-back-button" class="btn btn-primary" data-dismiss="modal">Go Back</a>
+       </div>
+    </div>
+
+
+    <div id="fullscreen-modal" class="modal  font-gotham hide" data-backdrop="static">
+       <div id="fullscreen-indicator" class="indicator"></div>
+       <div class="modal-header">
+          <h3 id="fullscreen-header-text"><img class="custom-logo" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACgAAAAoCAYAAACM/rhtAAADFUlEQVRYR+2XQUhUURSGz1AIhmEOCIKQCUYRCLpxa+7cldtaVLQNdFPQpqxNixYptI1q07bauSu3bhSEIBCMIBAESxCEIIzvwv84c+e+RufOiNBcGBjePffd//znP/+9r2InfFQCvtnVgxOJc3G80gGYVZkOg1n0mdl/weD7u8N2rvtUHVd33n0Pz1/MDCZ5/LX/x2ZebYa5+ekBmxzpqYubung2r4uvjvTYp3sjSQALy9v2cX23dJ5FUy83bO3Hvm0+upJMssLI8UHAAXL46Rf7tvO7APr6xnm7PtprsAjDAPm8sVfMwyygPqzv2vLGnhEfx4TgHA1eqHaFTdiYl/sxNthtq/cvBdDEpTZXEsQAmCTrRg5ANrg9UU1nbhZKC7sqpWeQZ0qC/0+Wtmx+aat1AFUihK7MYerx9EAoKwPwJBEDBLTAUgHWeYkAHF1mlZiuE5g3KztFJ85O9ofNAM4QAF9iQCuJucl+uzbaW0iEpCh5wXazJVbX9T1cL8ry89lo0BKbCzQAsBkP8GBhzFhHEsTTTIqnoRaXt/MAqnSlunFKkhTwO7ECQJ+EwtV0NQ3VDIN0JzqJrSVphmaBQfzQA0Rj48+/1iyRbLIAypgpiXRE5moG7Yi3qSuZ5+cBEhcnmNLrkX0QjaAZslenwRBai4d0Fj+nxLG1+BOpaQalEV7uPY1yp85iElA3e5DyRuaUpFgmzq870lksS0htFptwmR71XCB9HPbij0sS7ztzOu8sVrkqc2v/xFRjvmZBEv6WA5u6OOiU4SQ6NoB06FC1q2gsQOioLAOHbLJvMzGDMJW6/0ljvvsBSezblZ1Ci6zX9S0w+uBya0vcCGDcvV4XdeA4j5sxav/Sw2pQJqy18UlCOWEOkN7CTiTAGvCtZvAwJU6dwzDrWSxijhugBydAPJNh14G8OdTaJikzw5TN6MZ9rDZTBjA2ankgH03+s0BMqqNbZtSNjrbUvD62/KdBHJdt1GXfxI0AU1a0p8sEIG9NVOuWHemy0GjTtszndnFbQPmXdgDmUtxhsGUM5r6ojev/Aq30WEeR3otHAAAAAElFTkSuQmCC">  Video Request</h3>
+       </div>
+       <div id="fullscreen-body" class="modal-body">
+         <p id="fullscreen-message">Allow full screen?</p>
+       </div>
+       <div id="fullscreen-footer" class="modal-footer">
+          <button id="fullscreen-deny-button" class="btn" data-dismiss="modal" title="Deny operation">Block</button>
+          <button id="fullscreen-allow-button" type="button" class="btn btn-primary bold" rel="tooltip" data-dismiss="modal" title="Allow operation">Allow</button>
+       </div>
+    </div>
+
+    <div id="tab-limit-modal" class="modal  font-gotham hide" data-backdrop="static">
+      <div class="modal-header">
+        <button id="tab-limit-escape-button" class="close" data-dismiss="modal">×</button>
+        <h3 id="tab-limit-header-text"><img class="custom-logo" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACgAAAAoCAYAAACM/rhtAAADFUlEQVRYR+2XQUhUURSGz1AIhmEOCIKQCUYRCLpxa+7cldtaVLQNdFPQpqxNixYptI1q07bauSu3bhSEIBCMIBAESxCEIIzvwv84c+e+RufOiNBcGBjePffd//znP/+9r2InfFQCvtnVgxOJc3G80gGYVZkOg1n0mdl/weD7u8N2rvtUHVd33n0Pz1/MDCZ5/LX/x2ZebYa5+ekBmxzpqYubung2r4uvjvTYp3sjSQALy9v2cX23dJ5FUy83bO3Hvm0+upJMssLI8UHAAXL46Rf7tvO7APr6xnm7PtprsAjDAPm8sVfMwyygPqzv2vLGnhEfx4TgHA1eqHaFTdiYl/sxNthtq/cvBdDEpTZXEsQAmCTrRg5ANrg9UU1nbhZKC7sqpWeQZ0qC/0+Wtmx+aat1AFUihK7MYerx9EAoKwPwJBEDBLTAUgHWeYkAHF1mlZiuE5g3KztFJ85O9ofNAM4QAF9iQCuJucl+uzbaW0iEpCh5wXazJVbX9T1cL8ry89lo0BKbCzQAsBkP8GBhzFhHEsTTTIqnoRaXt/MAqnSlunFKkhTwO7ECQJ+EwtV0NQ3VDIN0JzqJrSVphmaBQfzQA0Rj48+/1iyRbLIAypgpiXRE5moG7Yi3qSuZ5+cBEhcnmNLrkX0QjaAZslenwRBai4d0Fj+nxLG1+BOpaQalEV7uPY1yp85iElA3e5DyRuaUpFgmzq870lksS0htFptwmR71XCB9HPbij0sS7ztzOu8sVrkqc2v/xFRjvmZBEv6WA5u6OOiU4SQ6NoB06FC1q2gsQOioLAOHbLJvMzGDMJW6/0ljvvsBSezblZ1Ci6zX9S0w+uBya0vcCGDcvV4XdeA4j5sxav/Sw2pQJqy18UlCOWEOkN7CTiTAGvCtZvAwJU6dwzDrWSxijhugBydAPJNh14G8OdTaJikzw5TN6MZ9rDZTBjA2ankgH03+s0BMqqNbZtSNjrbUvD62/KdBHJdt1GXfxI0AU1a0p8sEIG9NVOuWHemy0GjTtszndnFbQPmXdgDmUtxhsGUM5r6ojev/Aq30WEeR3otHAAAAAElFTkSuQmCC">  Too many open tabs</h3>
+      </div>
+      <div id="tab-limit-body" class="modal-body">
+        <p id="tab-limit-message">
+          You have exceeded the number of  tabs allowed. Please close a  tab to proceed.
+          </p>
+        <p><b></b></p><pre id="tab-limit-details" class="hide"></pre><p></p>
+      </div>
+      <div id="tab-limit-footer" class="modal-footer">
+        <a href="https://isolate.menlosecurity.com/https://raw.githubusercontent.com/CorndelWithSoftwire/SupportBank-Java/master/DodgyTransactions2015.csv#" id="tab-limit-proceed" class="btn btn-primary" data-dismiss="modal">OK</a>
+      </div>
+    </div>
+
+    <div id="coach-mode-modal" class="modal  hide white font-arial coach-mode-text">
+       <div class="modal-header">
+         <h3><a id="coach-mode-logo-link" class="safemail-text" target="_blank"><img id="coach-mode-logo" class="icon custom-logo" alt="Menlo Security" title="Menlo Security"></a><span id="coach-mode-modal-text">Security Warning</span></h3>
+      </div>
+      <div id="coach-mode-modal-body" class="modal-body custom-highlight">
+      </div>
+      <div class="modal-footer">
+        <a href="https://isolate.menlosecurity.com/https://raw.githubusercontent.com/CorndelWithSoftwire/SupportBank-Java/master/DodgyTransactions2015.csv#" id="coach-mode-cancel" class="coach-mode-button-1 btn" data-dismiss="modal">Cancel</a>
+        <a href="https://isolate.menlosecurity.com/https://raw.githubusercontent.com/CorndelWithSoftwire/SupportBank-Java/master/DodgyTransactions2015.csv#" id="coach-mode-proceed" class="coach-mode-button-2 btn" data-dismiss="modal">Disable Input Protection</a>
+      </div>
+   </div>
+
+   <div id="copy-paste-modal" class="modal  font-gotham hide" data-backdrop="static">
+     <div class="modal-header">
+       <button class="close" data-dismiss="modal">×</button>
+       <h3><img class="custom-logo" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACgAAAAoCAYAAACM/rhtAAADFUlEQVRYR+2XQUhUURSGz1AIhmEOCIKQCUYRCLpxa+7cldtaVLQNdFPQpqxNixYptI1q07bauSu3bhSEIBCMIBAESxCEIIzvwv84c+e+RufOiNBcGBjePffd//znP/+9r2InfFQCvtnVgxOJc3G80gGYVZkOg1n0mdl/weD7u8N2rvtUHVd33n0Pz1/MDCZ5/LX/x2ZebYa5+ekBmxzpqYubung2r4uvjvTYp3sjSQALy9v2cX23dJ5FUy83bO3Hvm0+upJMssLI8UHAAXL46Rf7tvO7APr6xnm7PtprsAjDAPm8sVfMwyygPqzv2vLGnhEfx4TgHA1eqHaFTdiYl/sxNthtq/cvBdDEpTZXEsQAmCTrRg5ANrg9UU1nbhZKC7sqpWeQZ0qC/0+Wtmx+aat1AFUihK7MYerx9EAoKwPwJBEDBLTAUgHWeYkAHF1mlZiuE5g3KztFJ85O9ofNAM4QAF9iQCuJucl+uzbaW0iEpCh5wXazJVbX9T1cL8ry89lo0BKbCzQAsBkP8GBhzFhHEsTTTIqnoRaXt/MAqnSlunFKkhTwO7ECQJ+EwtV0NQ3VDIN0JzqJrSVphmaBQfzQA0Rj48+/1iyRbLIAypgpiXRE5moG7Yi3qSuZ5+cBEhcnmNLrkX0QjaAZslenwRBai4d0Fj+nxLG1+BOpaQalEV7uPY1yp85iElA3e5DyRuaUpFgmzq870lksS0htFptwmR71XCB9HPbij0sS7ztzOu8sVrkqc2v/xFRjvmZBEv6WA5u6OOiU4SQ6NoB06FC1q2gsQOioLAOHbLJvMzGDMJW6/0ljvvsBSezblZ1Ci6zX9S0w+uBya0vcCGDcvV4XdeA4j5sxav/Sw2pQJqy18UlCOWEOkN7CTiTAGvCtZvAwJU6dwzDrWSxijhugBydAPJNh14G8OdTaJikzw5TN6MZ9rDZTBjA2ankgH03+s0BMqqNbZtSNjrbUvD62/KdBHJdt1GXfxI0AU1a0p8sEIG9NVOuWHemy0GjTtszndnFbQPmXdgDmUtxhsGUM5r6ojev/Aq30WEeR3otHAAAAAElFTkSuQmCC">  Copying and Pasting</h3>
+     </div>
+     <div class="modal-body">
+       <p>These actions are unavailable via the menu. Instead, use:</p>
+       <div class="menlo-copy-paste">
+         <ul>
+           <li class="menlo-commands">
+             <span><span class="menlo-key">Ctrl</span>+C</span>
+             <span><span class="menlo-key">Ctrl</span>+X</span>
+             <span><span class="menlo-key">Ctrl</span>+V</span>
+           </li>
+           <li>
+             <span>to copy</span>
+             <span>to cut</span>
+             <span>to paste</span>
+           </li>
+         </ul>
+       </div>
+     </div>
+     <div class="modal-footer">
+       <a href="https://isolate.menlosecurity.com/https://raw.githubusercontent.com/CorndelWithSoftwire/SupportBank-Java/master/DodgyTransactions2015.csv#" class="btn btn-primary" data-dismiss="modal">OK</a>
+     </div>
+   </div>
+   <div id="copy-link-modal" class="modal  hide" data-backdrop="static">
+     <div class="modal-header">
+       <button class="close" data-dismiss="modal">×</button>
+       <h3><span class="menlo-security-icon"></span> Copy URL Address</h3>
+     </div>
+     <div class="modal-body">
+       <p>
+         Please copy the URL address highlighted below using
+         <strong>Ctrl+C</strong>:
+       </p>
+       <textarea id="copy-link-text" rows="5">       </textarea>
+     </div>
+     <div class="modal-footer">
+       <a href="https://isolate.menlosecurity.com/https://raw.githubusercontent.com/CorndelWithSoftwire/SupportBank-Java/master/DodgyTransactions2015.csv#" class="btn" data-dismiss="modal">Close</a>
+     </div>
+   </div>
+   <div id="print-option-modal" class="modal  hide" tabindex="0" role="dialog" data-backdrop="static">
+     <div class="modal-dialog" role="document">
+       <div class="modal-content">
+         <div class="modal-header text-center">
+           <button id="print-option-escape-button" class="close" data-dismiss="modal" tabindex="0">×</button>
+           <h4><span class="menlo-security-icon"></span> Print Options</h4>
+           <label>Please select the page properties for the PDF print.</label>
+         </div>
+         <div class="modal-body mx-3">
+           <label>Layout</label>
+           <select class="mdb-select" id="layout">
+             <option value="portrait">Portrait</option>
+             <option value="landscape">Landscape</option>
+           </select>
+           <label>Paper size</label>
+           <select class="mdb-select" id="paper-size">
+             <option value="a3">A3</option>
+             <option value="a4">A4</option>
+             <option value="legal">Legal</option>
+             <option value="letter">Letter</option>
+           </select>
+           <div class="form-group">
+             <label>Scale (%)</label>
+             <input type="number" min="10" max="200" value="100" class="form-control" id="scale">
+           </div>
+           <label>Webpage options</label>
+           <div class="checkbox">
+             <label><input type="checkbox" id="header-footer" value="" checked="">Headers and footers</label>
+           </div>
+           <div class="checkbox">
+             <label><input type="checkbox" id="background" value="">Background graphics</label>
+           </div>
+           <div class="menlo-print-preview-placeholder"></div>
+         </div>
+         <div id="print-option-footer" class="modal-footer">
+           <a href="https://isolate.menlosecurity.com/https://raw.githubusercontent.com/CorndelWithSoftwire/SupportBank-Java/master/DodgyTransactions2015.csv#" id="print-option-button" class="btn btn-default" data-dismiss="modal">Print Preview</a>
+         </div>
+       </div>
+     </div>
+   </div>
+   <div id="print-preview-modal" class="modal  hide" tabindex="0" role="dialog" data-backdrop="static">
+     <div class="modal-dialog" role="document">
+       <div class="modal-content">
+         <div class="modal-header">
+           <button id="print-preview-escape-button" class="close" data-dismiss="modal" tabindex="0">×</button>
+           <h4><span class="menlo-security-icon"></span> Print Preview</h4>
+         </div>
+         <div class="modal-body mx-3">
+           <iframe id="print-preview-iframe" name="print-preview-iframe" style="width: 100%; height: 100%;" src="./saved_resource(2).html"></iframe>
+           <form method="post" action="https://isolate.menlosecurity.com/https://raw.githubusercontent.com/CorndelWithSoftwire/SupportBank-Java/master/DodgyTransactions2015.csv" target="print-preview-iframe" id="print-preview-form">
+             <input id="print-preview-layout" type="hidden" name="layout" value="">
+             <input id="print-preview-paper-size" type="hidden" name="paper_size" value="">
+             <input id="print-preview-scale" type="hidden" name="scale" value="">
+             <input id="print-preview-header-footer" type="hidden" name="header_footer" value="">
+             <input id="print-preview-background" type="hidden" name="background" value="">
+             <input id="print-preview-safe-rid" type="hidden" name="safe_rid" value="">
+             <input id="print-preview-tab-id" type="hidden" name="tab_id" value="">
+           </form>
+         </div>
+       </div>
+     </div>
+   </div>
+   <div id="print-alert-modal" class="modal  font-gotham hide" data-backdrop="static">
+       <div class="modal-header">
+          <button id="print-alert-escape-button" class="close" data-dismiss="modal" tabindex="0">×</button>
+          <h4><img class="custom-logo" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACgAAAAoCAYAAACM/rhtAAADFUlEQVRYR+2XQUhUURSGz1AIhmEOCIKQCUYRCLpxa+7cldtaVLQNdFPQpqxNixYptI1q07bauSu3bhSEIBCMIBAESxCEIIzvwv84c+e+RufOiNBcGBjePffd//znP/+9r2InfFQCvtnVgxOJc3G80gGYVZkOg1n0mdl/weD7u8N2rvtUHVd33n0Pz1/MDCZ5/LX/x2ZebYa5+ekBmxzpqYubung2r4uvjvTYp3sjSQALy9v2cX23dJ5FUy83bO3Hvm0+upJMssLI8UHAAXL46Rf7tvO7APr6xnm7PtprsAjDAPm8sVfMwyygPqzv2vLGnhEfx4TgHA1eqHaFTdiYl/sxNthtq/cvBdDEpTZXEsQAmCTrRg5ANrg9UU1nbhZKC7sqpWeQZ0qC/0+Wtmx+aat1AFUihK7MYerx9EAoKwPwJBEDBLTAUgHWeYkAHF1mlZiuE5g3KztFJ85O9ofNAM4QAF9iQCuJucl+uzbaW0iEpCh5wXazJVbX9T1cL8ry89lo0BKbCzQAsBkP8GBhzFhHEsTTTIqnoRaXt/MAqnSlunFKkhTwO7ECQJ+EwtV0NQ3VDIN0JzqJrSVphmaBQfzQA0Rj48+/1iyRbLIAypgpiXRE5moG7Yi3qSuZ5+cBEhcnmNLrkX0QjaAZslenwRBai4d0Fj+nxLG1+BOpaQalEV7uPY1yp85iElA3e5DyRuaUpFgmzq870lksS0htFptwmR71XCB9HPbij0sS7ztzOu8sVrkqc2v/xFRjvmZBEv6WA5u6OOiU4SQ6NoB06FC1q2gsQOioLAOHbLJvMzGDMJW6/0ljvvsBSezblZ1Ci6zX9S0w+uBya0vcCGDcvV4XdeA4j5sxav/Sw2pQJqy18UlCOWEOkN7CTiTAGvCtZvAwJU6dwzDrWSxijhugBydAPJNh14G8OdTaJikzw5TN6MZ9rDZTBjA2ankgH03+s0BMqqNbZtSNjrbUvD62/KdBHJdt1GXfxI0AU1a0p8sEIG9NVOuWHemy0GjTtszndnFbQPmXdgDmUtxhsGUM5r6ojev/Aq30WEeR3otHAAAAAElFTkSuQmCC">  <span id="print-alert-header-text"></span></h4>
+       </div>
+       <div id="print-alert-body" class="modal-body">
+          <p><b><span id="print-alert-message"></span></b></p>
+       </div>
+   </div>
+
+   <div class="hide safemail-hidden">
+   <span id="ro-ux-default">This website has been identified as suspicious and is therefore blocked.</span>
+   <span id="ro-ux-uce_cats-short">Site Classification: (<span id="ro-ux-uce_cats-short-cats"></span>)</span>
+   <span id="ro-ux-uce_cats">The link you clicked matches threat categories (<strong><span id="ro-ux-uce_cats-cats"></span></strong>)<p></p></span>
+   <span id="ro-ux-uce_reputation-short">Poor Reputation</span>
+   <span id="ro-ux-uce_reputation">The link you clicked scores poorly on reputation analysis (<strong><span id="ro-ux-uce_reputation-reputation"></span></strong>)<p></p></span>
+   <span id="ro-ux-uce_malware-short">Poor Reputation</span>
+   <span id="ro-ux-uce_malware">The link you clicked scores poorly on reputation analysis (<strong><span id="ro-ux-uce_malware-malware"></span></strong>)<p></p></span>
+   <span id="ro-ux-phishTarget-short">Phishing Target Name</span>
+   <span id="ro-ux-phishTarget">The link you clicked contains common phishing target names (paypal, ebay, google, dropbox, bank* etc.). <p><span id="ro-ux-phishTarget-url"></span></p></span>
+   <span id="ro-ux-exploitPath-short">Commonly Compromised Sites</span>
+   <span id="ro-ux-exploitPath">The link you clicked contains values from commonly compromised sites (wp-admin, wp-content, wp-included etc.). <p><span id="ro-ux-exploitPath-url"></span></p></span>
+   <span id="ro-ux-dots-short">High Count of "."</span>
+   <span id="ro-ux-dots">This server name (host name) contains an abnormal number of "." <p><span id="ro-ux-dots-url"></span></p></span>
+   <span id="ro-ux-dashes-short">Unusual "-" in server name</span>
+   <span id="ro-ux-dashes">The link you clicked contains an unusual presence of a "-". <p><span id="ro-ux-dashes-url"></span></p></span>
+   <span id="ro-ux-suspectCountry-short">Blacklisted Country</span>
+   <span id="ro-ux-suspectCountry">The link you clicked is from an uncommon or blacklisted country (<strong><span id="ro-ux-suspectCountry-tld"></span></strong>) <p><span id="ro-ux-suspectCountry-url"></span></p></span>
+   <span id="ro-ux-badTLD-short">Unusual Domain (<span id="ro-ux-badTLD-short-tld"></span>)</span>
+   <span id="ro-ux-badTLD">The link you clicked is to a website registered in an unusual domain. This site is on "<span id="ro-ux-badTLD-tld"></span>" <p><span id="ro-ux-badTLD-url"></span></p></span>
+   <span id="ro-ux-sketchyWebHost-short">Hosting Service</span>
+   <span id="ro-ux-sketchyWebHost">This site is on a hosting service which is often compromised to serve malicious content. <p><span id="ro-ux-sketchyWebHost-url"></span></p></span>
+   <span id="ro-ux-hostIsIp-short">Site-Number Only</span>
+   <span id="ro-ux-hostIsIp">Site-Number Only (aka IP Address) <p><span id="ro-ux-hostIsIp-url"></span></p></span>
+   <span id="ro-ux-httpInURL-short">Unusual use of http/https</span>
+   <span id="ro-ux-httpInURL">This URL contains http/https in the path which can mislead users into clicking harmful URLs. <p><span id="ro-ux-httpInURL-url"></span></p></span>
+   <span id="ro-ux-fakeTLD-short">Fake domain</span>
+   <span id="ro-ux-fakeTLD">The link you clicked contains an unusual presence of com-, edu-, gov-, net-, or org-<p><span id="ro-ux-fakeTLD-url"></span></p></span>
+   <span id="ro-ux-urlShorteners-short">URL shortener</span>
+   <span id="ro-ux-urlShorteners">The link you clicked was modified with a URL shortening service. <p><span id="ro-ux-urlShorteners-url"></span></p></span>
+   <span id="ro-ux-unusualPort-short">Non-standard Port</span>
+   <span id="ro-ux-unusualPort">This site is using a non-standard port. Legitimate URLs rarely use anything but standard ports (80/443). <p><span id="ro-ux-unusualPort-url"></span></p></span>
+   <span id="ro-ux-dynamicDNS-short">Dynamic Name</span>
+   <span id="ro-ux-dynamicDNS">This site was connected to via a Dynamic DNS service (dyndns.org, changeip.com, etc.). <p><span id="ro-ux-dynamicDNS-url"></span></p></span>
+   <span id="ro-ux-alexaRank-short">Low Popularity Rank: <span id="ro-ux-alexaRank-short-rank"></span></span>
+   <span id="ro-ux-alexaRank">The link you clicked is hosted on a site with low popularity rank (<strong><span id="ro-ux-alexaRank-rank"></span></strong>)<p></p></span>
+   <span id="ro-ux-uce_webroot_reputation-short">Site Reputation (<span id="ro-ux-uce_webroot_reputation-short-rank"></span>)</span>
+   <span id="ro-ux-uce_webroot_reputation">Websites are analyzed and classified based on the type of content on (or traffic coming from) the web servers. In this case you have encountered a site which has a poor IP Reputation score. (<strong><span id="ro-ux-uce_webroot_reputation-rank"></span></strong>)<p></p></span>
+</div>
+
+
+    </div>
+    
+    <script src="./ui-min.js" type="text/javascript"></script>
+
+  
+
+</body></html>

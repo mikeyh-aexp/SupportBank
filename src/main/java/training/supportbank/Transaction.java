@@ -4,6 +4,7 @@ import java.math.BigDecimal;
 import java.time.LocalDate;
 
 public class Transaction {
+
     LocalDate date;
     String narrative;
     String fromName;
